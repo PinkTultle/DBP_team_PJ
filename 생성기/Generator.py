@@ -37,6 +37,7 @@ table_num = int(input())
 
 
 # 여기서 부터 들어가는 값들
+#region 유저정보
 
 ID = [
 'gm58z9u',
@@ -155,6 +156,45 @@ name = [
 email = [ '@naver.com', '@daum.net', '@gmail.com', '@hanmail.net', '@nate.com', '@yahoo.com']
 
 
+#endregion
+
+
+#region 레시피정보
+
+'레시피번호, 제목, 작성자ID, 작성내용, 작성시간, 카테고리, 레시피설명, 조회수, 추천수, 난이도'
+
+
+
+#endregion
+
+#region 댓글정보
+CREATE TABLE 댓글 (
+	댓글번호	NUMBER(3) PRIMARY KEY,
+	레시피번호	NUMBER(30) NOT NULL,
+	작성시간	DATE,
+	댓글내용	CHAR(12),
+	작성자ID VARCHAR2(30) NOT NULL,
+	FOREIGN KEY (레시피번호) REFERENCES 레시피(레시피번호),
+	FOREIGN KEY (작성자ID) REFERENCES 사용자(사용자ID)
+
+);
+
+
+#endregion
+
+#region 리뷰
+CREATE TABLE 리뷰 (
+	리뷰번호	NUMBER(3) PRIMARY KEY,
+	레시피번호	NUMBER(30) NOT NULL,
+	작성시간	DATE,
+	평점	NUMBER(5),
+	작성자ID VARCHAR2(30) NOT NULL,
+	FOREIGN KEY (레시피번호) REFERENCES 레시피(레시피번호),
+	FOREIGN KEY (작성자ID) REFERENCES 사용자(사용자ID)
+);
+
+
+#endregion
 
 
 
@@ -176,10 +216,7 @@ email = [ '@naver.com', '@daum.net', '@gmail.com', '@hanmail.net', '@nate.com', 
 
 
 
-
-
-
-f = open('./'+file_name+'.txt', 'w')
+f = open('./'+file_name+'.txt', 'w', encoding="UTF-8")
 
 #사용자
 if table_num == 1:
@@ -189,7 +226,8 @@ if table_num == 1:
 #레시피
 elif table_num == 2:
     for i in range(num) :
-        f.write(f"INSERT INTO {table[table_num-1]} (신청일자, 신청_혈액형, 신청_혈액성분, 신청_혈액팩_수, 신청_담당자_코드, 신청_센터) VALUES ( '2023-"+str(random.randint(1,4)) +"-"+str(random.randint(1,30)) +"', '"+ str(blood_list[random.randint(0,3)]) +"', '"+ str(type_list[random.randint(0,2)]) +"', '"+ str(random.randint(1,6)) +"', 'PIC-0000000"+str(random.randint(1,21)) +"', '"+ str(center[random.randint(0,33)])+"');\n")
+        f.write(f"INSERT INTO {table[table_num-1]} (레시피번호, 제목, 작성자ID, 작성내용, 작성시간, 카테고리, 레시피설명, 조회수, 추천수, 난이도) 
+                VALUES ({random.randint(1,200)},{}','{}','{}','{}','{}','{}','{}','{}','{}');\n")
 
 #댓글
 elif table_num == 3:
