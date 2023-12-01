@@ -1,0 +1,9 @@
+회원탈퇴
+레시피삭제
+댓글삭제
+리뷰삭제
+
+DELETE * FROM 사용자 WHERE 사용자ID = "(해당 사용자ID)";
+DELETE * FROM 레시피 WHERE 레시피ID = "(해당 레시피ID)";
+DELETE * FROM 댓글 WHERE 레시피ID = "(해당 레시피ID)";
+DELETE * FROM 리뷰 WHERE 레시피ID = "(해당 레시피ID)"; 

@@ -1,0 +1,53 @@
+CREATE TABLE 등급 (
+	등급이름	 VARCHAR2(20) PRIMARY KEY,
+	필요작성수	NUMBER(5) NOT NULL,
+	뱃지이미지 	BLOB
+);
+
+CREATE TABLE 사용자 (
+	사용자ID	VARCHAR2(30) PRIMARY KEY,
+	이름	NCHAR(10) NOT NULL,
+	이메일	NCHAR(5),
+	전화번호	CHAR(12),
+	비밀번호  CHAR(30),
+	총작성수 NUMBER(5),
+	등급 VARCHAR(20),
+	FOREIGN KEY (등급) REFERENCES 등급(등급이름)
+);
+
+
+CREATE TABLE 레시피 (
+	레시피번호 NUMBER(30) PRIMARY KEY,
+	제목	NCHAR(20) NOT NULL,
+	작성자ID VARCHAR2(20),
+	작성내용	VARCHAR2(30),
+	작성시간	DATE,
+	카테고리  CHAR(30),
+	레시피설명 VARCHAR2(30),
+	조회수 NUMBER(10),
+	추천수 NUMBER(10),
+	이미지 BLOB,
+	난이도 NUMBER(5),
+	FOREIGN KEY (작성자ID) REFERENCES 사용자(사용자ID)
+);
+
+CREATE TABLE 댓글 (
+	댓글번호	NUMBER(3) PRIMARY KEY,
+	레시피번호	NUMBER(30) NOT NULL,
+	작성시간	DATE,
+	댓글내용	CHAR(12),
+	작성자ID VARCHAR2(30) NOT NULL,
+	FOREIGN KEY (레시피번호) REFERENCES 레시피(레시피번호),
+	FOREIGN KEY (작성자ID) REFERENCES 사용자(사용자ID)
+
+);
+
+CREATE TABLE 리뷰 (
+	리뷰번호	NUMBER(3) PRIMARY KEY,
+	레시피번호	NUMBER(30) NOT NULL,
+	작성시간	DATE,
+	평점	NUMBER(5),
+	작성자ID VARCHAR2(30) NOT NULL,
+	FOREIGN KEY (레시피번호) REFERENCES 레시피(레시피번호),
+	FOREIGN KEY (작성자ID) REFERENCES 사용자(사용자ID)
+);

@@ -1,0 +1,5 @@
+INSERT INTO 사용자 (사용자ID, 이름,	이메일, 전화번호, 비밀번호, 총작성수, 등급) VALUES ('gm58z9u,황진수,h3xtQkU@nate.com,010-9316-0376,passwd,0,None');
+INSERT INTO 사용자 (사용자ID, 이름,	이메일, 전화번호, 비밀번호, 총작성수, 등급) VALUES ('idZJhqf,사공원일,jB55m0f@naver.com,010-0711-0531,passwd,0,None');
+INSERT INTO 사용자 (사용자ID, 이름,	이메일, 전화번호, 비밀번호, 총작성수, 등급) VALUES ('F42Q6I7,서인경,rVk7wjk@naver.com,010-8007-7465,passwd,0,None');
+INSERT INTO 사용자 (사용자ID, 이름,	이메일, 전화번호, 비밀번호, 총작성수, 등급) VALUES ('vf5ZiKm,권영옥,Hix5po9@yahoo.com,010-2053-9962,passwd,0,None');
+INSERT INTO 사용자 (사용자ID, 이름,	이메일, 전화번호, 비밀번호, 총작성수, 등급) VALUES ('bJcR1GC,사공재욱,yZlevrh@naver.com,010-8419-2264,passwd,0,None');
