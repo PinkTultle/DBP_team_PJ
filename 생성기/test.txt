@@ -1,5 +1,5 @@
-INSERT INTO 리뷰 (리뷰번호, 레시피번호, 작성시간, 평점, 작성자ID) VALUES (0, None, '2023-6-16', 2, 'None');
-INSERT INTO 리뷰 (리뷰번호, 레시피번호, 작성시간, 평점, 작성자ID) VALUES (0, None, '2023-10-3', 4, 'None');
-INSERT INTO 리뷰 (리뷰번호, 레시피번호, 작성시간, 평점, 작성자ID) VALUES (0, None, '2023-5-27', 1, 'None');
-INSERT INTO 리뷰 (리뷰번호, 레시피번호, 작성시간, 평점, 작성자ID) VALUES (0, None, '2023-9-27', 4, 'None');
-INSERT INTO 리뷰 (리뷰번호, 레시피번호, 작성시간, 평점, 작성자ID) VALUES (0, None, '2023-3-3', 7, 'None');
+INSERT INTO 댓글 (댓글번호, 레시피번호, 작성시간, 댓글내용, 작성자ID) VALUES (1, None, '2023-3-14', '오늘은 이거닷', 'None');
+INSERT INTO 댓글 (댓글번호, 레시피번호, 작성시간, 댓글내용, 작성자ID) VALUES (1, None, '2023-2-28', '너무 어려워요 ㅠㅠ', 'None');
+INSERT INTO 댓글 (댓글번호, 레시피번호, 작성시간, 댓글내용, 작성자ID) VALUES (1, None, '2023-4-12', '우와 대박이에요~~!', 'None');
+INSERT INTO 댓글 (댓글번호, 레시피번호, 작성시간, 댓글내용, 작성자ID) VALUES (1, None, '2023-7-25', '오늘은 이거닷', 'None');
+INSERT INTO 댓글 (댓글번호, 레시피번호, 작성시간, 댓글내용, 작성자ID) VALUES (1, None, '2023-4-18', '행복하세요', 'None');
