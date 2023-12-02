@@ -1,5 +1,5 @@
-INSERT INTO 댓글 (댓글번호, 레시피번호, 작성시간, 댓글내용, 작성자ID) VALUES (1, None, '2023-3-14', '오늘은 이거닷', 'None');
-INSERT INTO 댓글 (댓글번호, 레시피번호, 작성시간, 댓글내용, 작성자ID) VALUES (1, None, '2023-2-28', '너무 어려워요 ㅠㅠ', 'None');
-INSERT INTO 댓글 (댓글번호, 레시피번호, 작성시간, 댓글내용, 작성자ID) VALUES (1, None, '2023-4-12', '우와 대박이에요~~!', 'None');
-INSERT INTO 댓글 (댓글번호, 레시피번호, 작성시간, 댓글내용, 작성자ID) VALUES (1, None, '2023-7-25', '오늘은 이거닷', 'None');
-INSERT INTO 댓글 (댓글번호, 레시피번호, 작성시간, 댓글내용, 작성자ID) VALUES (1, None, '2023-4-18', '행복하세요', 'None');
+INSERT INTO 사용자 (사용자ID, 이름, 이메일, 전화번호, 비밀번호, 총작성수, 등급) VALUES ('gm58z9u', '한지윤', 'WDrk5I1@gmail.com', '010-9594-2339', 'passwd', 0, 'None');
+INSERT INTO 사용자 (사용자ID, 이름, 이메일, 전화번호, 비밀번호, 총작성수, 등급) VALUES ('idZJhqf', '제갈윤자', 'cCrG6wA@nate.com', '010-0832-3723', 'passwd', 0, 'None');
+INSERT INTO 사용자 (사용자ID, 이름, 이메일, 전화번호, 비밀번호, 총작성수, 등급) VALUES ('F42Q6I7', '송경선', 'h3xtQkU@nate.com', '010-9159-1257', 'passwd', 0, 'None');
+INSERT INTO 사용자 (사용자ID, 이름, 이메일, 전화번호, 비밀번호, 총작성수, 등급) VALUES ('vf5ZiKm', '풍종훈', 'cCrG6wA@gmail.com', '010-6011-7508', 'passwd', 0, 'None');
+INSERT INTO 사용자 (사용자ID, 이름, 이메일, 전화번호, 비밀번호, 총작성수, 등급) VALUES ('bJcR1GC', '안승윤', 'W0A1VI3@yahoo.com', '010-9763-4646', 'passwd', 0, 'None');

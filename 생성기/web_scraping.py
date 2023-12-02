@@ -3,10 +3,10 @@ import csv
 import requests
 from bs4 import BeautifulSoup
 
-url ="https://namu.wiki/w/%EB%AF%B8%EA%B5%AD%20%EC%9A%94%EB%A6%AC"
+url ="https://namu.wiki/w/%EB%A9%95%EC%8B%9C%EC%BD%94%20%EC%9A%94%EB%A6%AC"
 
 # 엑셀 파일로 저장하기
-filename = "미국요리목록.csv"
+filename = "멕시코요리목록.csv"
 f = open(filename, "w", encoding="utf-8-sig", newline="")
 writer = csv.writer(f)
 
