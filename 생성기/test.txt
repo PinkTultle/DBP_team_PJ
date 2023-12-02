@@ -1,5 +1,5 @@
-INSERT INTO »ç¿ëÀÚ (»ç¿ëÀÚID, ÀÌ¸§, ÀÌ¸ÞÀÏ, ÀüÈ­¹øÈ£, ºñ¹Ð¹øÈ£, ÃÑÀÛ¼º¼ö, µî±Þ) VALUES ('gm58z9u','Á¦°¥¼±','n2jQmww@nate.com','010-7714-2274','passwd', 0,'None');
-INSERT INTO »ç¿ëÀÚ (»ç¿ëÀÚID, ÀÌ¸§, ÀÌ¸ÞÀÏ, ÀüÈ­¹øÈ£, ºñ¹Ð¹øÈ£, ÃÑÀÛ¼º¼ö, µî±Þ) VALUES ('idZJhqf','±Ç¿øÁø','hEQp0YS@nate.com','010-4395-3418','passwd', 0,'None');
-INSERT INTO »ç¿ëÀÚ (»ç¿ëÀÚID, ÀÌ¸§, ÀÌ¸ÞÀÏ, ÀüÈ­¹øÈ£, ºñ¹Ð¹øÈ£, ÃÑÀÛ¼º¼ö, µî±Þ) VALUES ('F42Q6I7','¹é¸íÀÚ','AmhTTDS@daum.net','010-8366-5374','passwd', 0,'None');
-INSERT INTO »ç¿ëÀÚ (»ç¿ëÀÚID, ÀÌ¸§, ÀÌ¸ÞÀÏ, ÀüÈ­¹øÈ£, ºñ¹Ð¹øÈ£, ÃÑÀÛ¼º¼ö, µî±Þ) VALUES ('vf5ZiKm','Ãß»óÇÐ','AmhTTDS@yahoo.com','010-3326-2044','passwd', 0,'None');
-INSERT INTO »ç¿ëÀÚ (»ç¿ëÀÚID, ÀÌ¸§, ÀÌ¸ÞÀÏ, ÀüÈ­¹øÈ£, ºñ¹Ð¹øÈ£, ÃÑÀÛ¼º¼ö, µî±Þ) VALUES ('bJcR1GC','È²º¸ÀÎ¿Á','0whftlF@yahoo.com','010-9186-3960','passwd', 0,'None');
+INSERT INTO ì‚¬ìš©ìž (ì‚¬ìš©ìžID, ì´ë¦„, ì´ë©”ì¼, ì „í™”ë²ˆí˜¸, ë¹„ë°€ë²ˆí˜¸, ì´ìž‘ì„±ìˆ˜, ë“±ê¸‰) VALUES ('gm58z9u', 'í•œì§€ìœ¤', 'WDrk5I1@gmail.com', '010-9594-2339', 'passwd', 0, 'None');
+INSERT INTO ì‚¬ìš©ìž (ì‚¬ìš©ìžID, ì´ë¦„, ì´ë©”ì¼, ì „í™”ë²ˆí˜¸, ë¹„ë°€ë²ˆí˜¸, ì´ìž‘ì„±ìˆ˜, ë“±ê¸‰) VALUES ('idZJhqf', 'ì œê°ˆìœ¤ìž', 'cCrG6wA@nate.com', '010-0832-3723', 'passwd', 0, 'None');
+INSERT INTO ì‚¬ìš©ìž (ì‚¬ìš©ìžID, ì´ë¦„, ì´ë©”ì¼, ì „í™”ë²ˆí˜¸, ë¹„ë°€ë²ˆí˜¸, ì´ìž‘ì„±ìˆ˜, ë“±ê¸‰) VALUES ('F42Q6I7', 'ì†¡ê²½ì„ ', 'h3xtQkU@nate.com', '010-9159-1257', 'passwd', 0, 'None');
+INSERT INTO ì‚¬ìš©ìž (ì‚¬ìš©ìžID, ì´ë¦„, ì´ë©”ì¼, ì „í™”ë²ˆí˜¸, ë¹„ë°€ë²ˆí˜¸, ì´ìž‘ì„±ìˆ˜, ë“±ê¸‰) VALUES ('vf5ZiKm', 'í’ì¢…í›ˆ', 'cCrG6wA@gmail.com', '010-6011-7508', 'passwd', 0, 'None');
+INSERT INTO ì‚¬ìš©ìž (ì‚¬ìš©ìžID, ì´ë¦„, ì´ë©”ì¼, ì „í™”ë²ˆí˜¸, ë¹„ë°€ë²ˆí˜¸, ì´ìž‘ì„±ìˆ˜, ë“±ê¸‰) VALUES ('bJcR1GC', 'ì•ˆìŠ¹ìœ¤', 'W0A1VI3@yahoo.com', '010-9763-4646', 'passwd', 0, 'None');
