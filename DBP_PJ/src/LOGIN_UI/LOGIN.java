@@ -23,6 +23,7 @@ import javax.swing.BoundedRangeModel;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComponent;
+import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -114,6 +115,7 @@ public class LOGIN extends JFrame {
 		ID.setHorizontalAlignment(JTextField.CENTER);
 		ID.setOpaque(false);
 		ID.setBorder(null);
+		ID.addFocusListener(fe);
 		login_pane.add(ID);
 		
 		PW = new JPasswordField("PW");
@@ -136,6 +138,7 @@ public class LOGIN extends JFrame {
 		Join_bt.setBorder(null);
 		Join_bt.setBackground(null);
 		Join_bt.setContentAreaFilled(false);
+		Join_bt.addActionListener(Ae);
 		login_pane.add(Join_bt);
 		
 		login_img = new ImageIcon("image/login.png");
@@ -145,6 +148,7 @@ public class LOGIN extends JFrame {
 		Login_bt.setBorder(null);
 		Login_bt.setBackground(null);
 		Login_bt.setContentAreaFilled(false);
+		Login_bt.addActionListener(Ae);
 		login_pane.add(Login_bt);
 		
 		
@@ -173,7 +177,7 @@ public class LOGIN extends JFrame {
 		@Override
 		public void focusGained(FocusEvent e) {
 			if(e.getSource() == ID) {
-				
+				ID.setText("");
 			}
 			
 			if(e.getSource() == PW) {
@@ -184,8 +188,8 @@ public class LOGIN extends JFrame {
 
 		@Override
 		public void focusLost(FocusEvent e) {
-				if(e.getSource() == ID) {
-				
+			if(e.getSource() == ID && ID.getText().equals("")) {
+				ID.setText("ID");
 			}
 			
 			if(e.getSource() == PW && PW.getText().equals("")) {
@@ -202,6 +206,7 @@ public class LOGIN extends JFrame {
 			int Key_code = e.getKeyCode();
 			
 			if(Key_code == KeyEvent.VK_ENTER) {
+				//System.out.print("엔터입력");
 				Login_bt.action(null, e);
 			}
 		}
@@ -221,15 +226,68 @@ public class LOGIN extends JFrame {
 
 			if(e.getSource() == Login_bt) {
 				
+				if(ID.getText().equals("ID")) {
+					new fail_popup("ID를 입력하세요!");
+				}
+				else if(PW.getText().equals("PW")) {
+					new fail_popup("PW를 입력하세요!");
+				}
+				else {
+					//로그인 메서드
+				}
 			}
 			if(e.getSource() == Join_bt) {
-				
+				new JOIN_UI();
+
 			}
 			
 			
 		}
 		
 	}
-	
+}
+
+class fail_popup extends JDialog {
+
+	public fail_popup(String text) {
+
+		setSize(300, 150);
+		setTitle("로그인 실패");
+
+		// 사이즈 조절 off
+		setResizable(false);
+		// 화면 중앙에 출력
+		setLocationRelativeTo(null);
+
+		JPanel jp = (JPanel) getContentPane();
+		jp.setLayout(new BorderLayout(10, 10));
+		jp.setBackground(new Color(0xF7EFE5));
+		setContentPane(jp);
+
+		JLabel jl = new JLabel(text);
+		jl.setFont(new Font("맑은 고딕", Font.BOLD | Font.PLAIN, 25));
+
+		jl.setHorizontalAlignment(JLabel.CENTER);
+
+		JButton jb = new JButton("확인");
+		jb.setBorderPainted(false);
+		jb.setFocusPainted(false);
+		jb.setBackground(new Color(0x7743DB));
+		jb.setFont(new Font("맑은 고딕", Font.BOLD | Font.PLAIN, 22));
+		jb.setForeground(Color.white);
+
+		jb.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				dispose();
+			}
+		});
+
+		add(jb, BorderLayout.SOUTH);
+		add(jl, BorderLayout.CENTER);
+
+		setVisible(true);
+	}
 
 }
+
+
