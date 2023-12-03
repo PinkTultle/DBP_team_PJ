@@ -1,0 +1,8 @@
+INSERT INTO 등급 (등급이름, 필요작성수, 뱃지이미지) VALUES ('뉴비', 0, null);
+INSERT INTO 등급 (등급이름, 필요작성수, 뱃지이미지) VALUES ('브론즈', 1, null);
+INSERT INTO 등급 (등급이름, 필요작성수, 뱃지이미지) VALUES ('실버', 5, null);
+INSERT INTO 등급 (등급이름, 필요작성수, 뱃지이미지) VALUES ('골드', 10, null);
+INSERT INTO 등급 (등급이름, 필요작성수, 뱃지이미지) VALUES ('플레티넘', 15, null);
+INSERT INTO 등급 (등급이름, 필요작성수, 뱃지이미지) VALUES ('다이아', 20, null);
+
+
