@@ -1,3 +1,11 @@
+ALTER session set "_ORACLE_SCRIPT"=true;
+DROP USER RECIPE CASCADE; -- 기존 사용자 삭제(현재 접속되어 있으면 삭제 안 됨)
+	-- CASCADE option : 관련 스키마 개체들도 함께 삭제.  Default는 No Action
+CREATE USER RECIPE IDENTIFIED BY 1234  -- 사용자 ID : RECIPE, 비밀번호 : 1234
+    DEFAULT TABLESPACE USERS
+    TEMPORARY TABLESPACE TEMP;
+GRANT connect, resource, dba TO RECIPE;
+
 CREATE TABLE 등급 (
 	등급이름	 VARCHAR2(20) PRIMARY KEY,
 	필요작성수	NUMBER(5) NOT NULL,
@@ -7,11 +15,11 @@ CREATE TABLE 등급 (
 CREATE TABLE 사용자 (
 	사용자ID	VARCHAR2(30) PRIMARY KEY,
 	이름	NCHAR(10) NOT NULL,
-	이메일	NCHAR(5),
-	전화번호	CHAR(12),
+	이메일	NCHAR(30),
+	전화번호	CHAR(15),
 	비밀번호  CHAR(30),
 	총작성수 NUMBER(5),
-	등급 VARCHAR(20),
+	등급 VARCHAR(20) default '아이언',
 	FOREIGN KEY (등급) REFERENCES 등급(등급이름)
 );
 
@@ -23,31 +31,33 @@ CREATE TABLE 레시피 (
 	작성내용	VARCHAR2(30),
 	작성시간	DATE,
 	카테고리  CHAR(30),
-	레시피설명 VARCHAR2(30),
+	레시피설명 VARCHAR2(50),
 	조회수 NUMBER(10),
 	추천수 NUMBER(10),
-	이미지 BLOB,
 	난이도 NUMBER(5),
 	FOREIGN KEY (작성자ID) REFERENCES 사용자(사용자ID)
 );
 
 CREATE TABLE 댓글 (
-	댓글번호	NUMBER(3) PRIMARY KEY,
+	댓글번호	NUMBER(3),
 	레시피번호	NUMBER(30) NOT NULL,
 	작성시간	DATE,
-	댓글내용	CHAR(12),
+	댓글내용	CHAR(50),
 	작성자ID VARCHAR2(30) NOT NULL,
 	FOREIGN KEY (레시피번호) REFERENCES 레시피(레시피번호),
-	FOREIGN KEY (작성자ID) REFERENCES 사용자(사용자ID)
-
+	FOREIGN KEY (작성자ID) REFERENCES 사용자(사용자ID),
+	CONSTRAINT 댓글_기본키 PRIMARY KEY(댓글번호, 레시피번호)
 );
 
+
 CREATE TABLE 리뷰 (
-	리뷰번호	NUMBER(3) PRIMARY KEY,
+	리뷰번호	NUMBER(3),
 	레시피번호	NUMBER(30) NOT NULL,
+	리뷰내용 VARCHAR2(300),
 	작성시간	DATE,
 	평점	NUMBER(5),
 	작성자ID VARCHAR2(30) NOT NULL,
 	FOREIGN KEY (레시피번호) REFERENCES 레시피(레시피번호),
-	FOREIGN KEY (작성자ID) REFERENCES 사용자(사용자ID)
+	FOREIGN KEY (작성자ID) REFERENCES 사용자(사용자ID),
+	CONSTRAINT 리뷰_기본키 PRIMARY KEY(레시피번호, 작성자ID)
 );

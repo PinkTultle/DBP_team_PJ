@@ -156,6 +156,15 @@ name = [
 
 email = [ '@naver.com', '@daum.net', '@gmail.com', '@hanmail.net', '@nate.com', '@yahoo.com']
 
+Rating = [
+    '아이언',
+    '브론즈',
+    '실버',
+    '골드',
+    '플레티넘',
+    '다이아'
+]
+
 
 #endregion
 
@@ -540,7 +549,7 @@ f = open('./'+file_name+'.txt', 'w', encoding="UTF-8")
 #사용자
 if table_num == 1:
     for i in range(num) :
-        f.write(f"INSERT INTO {table[table_num-1]} (사용자ID, 이름, 이메일, 전화번호, 비밀번호, 총작성수, 등급) VALUES ('{ID[i]}', '{name[random.randint(0,len(name)-1)]}', '{ID[random.randint(0,len(ID)-1)]+email[random.randint(0,len(email)-1)]}', '{'010-'+ str(random.randint(1,9999)).zfill(4) +'-'+ str(random.randint(1,9999)).zfill(4)}', '{'passwd'}', {0});\n")
+        f.write(f"INSERT INTO {table[table_num-1]} (사용자ID, 이름, 이메일, 전화번호, 비밀번호, 총작성수, 등급) VALUES ('{ID[i]}', '{name[random.randint(0,len(name)-1)]}', '{ID[random.randint(0,len(ID)-1)]+email[random.randint(0,len(email)-1)]}', '{'010-'+ str(random.randint(1,9999)).zfill(4) +'-'+ str(random.randint(1,9999)).zfill(4)}', '{'passwd'}', 0, '뉴비');\n")
     
 #레시피
 elif table_num == 2:
@@ -551,27 +560,27 @@ elif table_num == 2:
     if Category_num == 1:
         cate_table = ko_title
     elif Category_num == 2:
-        cate_table = Wes_title
+        cate_table = cn_title
     elif Category_num == 3:
         cate_table = Wes_title
     elif Category_num == 4:
         cate_table = jp_title
 
 
-    for i in range(num) :
+    for i in range(len(cate_table)-1) :
         class_num = random.randint(0, len(cate_table)-1)
         f.write(f"INSERT INTO {table[table_num-1]} (레시피번호, 제목, 작성자ID, 작성내용, 작성시간, 카테고리, 레시피설명, 조회수, 추천수, 난이도) \
-VALUES ({i}, '{cate_table[class_num]}', '{ID[class_num]}', '{''}', '{'2023-'+str(random.randint(1,12))+'-'+str(random.randint(1,30))}', '{Category[Category_num-1]}', '{Comments[random.randint(0,len(Comments)-1)]}', '{''}', {0}, {0}, {random.randint(1,5)});\n")
+VALUES ({i+1+235}, '{cate_table[class_num]}', '아이디들어갈곳', '조리법 {random.randint(0, num)}', '{'2023-'+str(random.randint(1,12))+'-'+str(random.randint(1,30))}', '{Category[Category_num-1]}', '맛있는 {cate_table[class_num]} 레시피!', {0}, {0}, {random.randint(1,5)});\n")
     
 #댓글
 elif table_num == 3:
     for i in range(num) :
-        f.write(f"INSERT INTO {table[table_num-1]} (댓글번호, 레시피번호, 작성시간, 댓글내용, 작성자ID) VALUES ({1}, {None}, '{'2023-'+str(random.randint(1,12))+'-'+str(random.randint(1,30))}', '{Comments[random.randint(0,len(Comments)-1)]}', '{None}');\n")
+        f.write(f"INSERT INTO {table[table_num-1]} (댓글번호, 레시피번호, 작성시간, 댓글내용, 작성자ID) VALUES ({1}, {i+1}, '{'2023-'+str(random.randint(1,12))+'-'+str(random.randint(1,30))}', '{Comments[random.randint(0,len(Comments)-1)]}', '아이디들어갈곳');\n")
 
 #리뷰
 else :
     for i in range(num) :
-        f.write(f"INSERT INTO {table[table_num-1]} (리뷰번호, 레시피번호, 작성시간, 평점, 작성자ID) VALUES ({0}, {None}, '{'2023-'+str(random.randint(1,12))+'-'+str(random.randint(1,30))}', {random.randint(1,10)}, '{None}');\n")
+        f.write(f"INSERT INTO {table[table_num-1]} (리뷰번호, 레시피번호, 리뷰내용, 작성시간, 평점, 작성자ID) VALUES ({1}, {i+1}, '{i+1}번 레시피 리뷰','{'2023-'+str(random.randint(1,12))+'-'+str(random.randint(1,30))}', {random.randint(1,10)}, '아이디들어갈곳');\n")
 
 
 f.close()
