@@ -133,8 +133,10 @@ public class LOGIN extends JFrame {
 		//로그인, 회원가입 버튼
 		join_img = new ImageIcon("image/join.png");
 		Join_bt = new JButton(join_img);
+		Join_bt.setPressedIcon(new ImageIcon("./image/join_press.png"));
 		Join_bt.setBounds(PW_l.getX()+30, PW_l.getY()+PW.getHeight()+20, 100, 30);
 		Join_bt.setOpaque(false);
+		Join_bt.setRequestFocusEnabled(false);
 		Join_bt.setBorder(null);
 		Join_bt.setBackground(null);
 		Join_bt.setContentAreaFilled(false);
@@ -143,8 +145,10 @@ public class LOGIN extends JFrame {
 		
 		login_img = new ImageIcon("image/login.png");
 		Login_bt = new JButton(login_img);
+		Login_bt.setPressedIcon(new ImageIcon("./image/login_press.png"));
 		Login_bt.setBounds(Join_bt.getX()+Join_bt.getWidth()+10, Join_bt.getY(), Join_bt.getWidth(), Join_bt.getHeight());
 		Login_bt.setOpaque(false);
+		Login_bt.setRequestFocusEnabled(false);
 		Login_bt.setBorder(null);
 		Login_bt.setBackground(null);
 		Login_bt.setContentAreaFilled(false);
