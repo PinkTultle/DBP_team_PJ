@@ -2,27 +2,18 @@ package LOGIN_UI;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Container;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.awt.geom.Line2D;
-import java.awt.geom.Point2D;
-import java.awt.geom.Rectangle2D;
-
 import javax.swing.BorderFactory;
-import javax.swing.BoundedRangeModel;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
-import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -31,6 +22,7 @@ import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
 
+@SuppressWarnings("serial")
 public class LOGIN extends JFrame {
 	
 	/*설정 값들 : 창크기나, 폰트 크기등 
@@ -48,11 +40,10 @@ public class LOGIN extends JFrame {
 	private Font font = new Font("맑은 고딕", Font.ROMAN_BASELINE + Font.PLAIN, 18);
 	private JPanel c = (JPanel) getContentPane(),
 			login_pane;
-	private Graphics2D Line;
-	
 	private FocusListener fe = new Focus_event();
 	private KeyListener Ke = new Focus_event();
 	private ActionListener Ae = new Action_event();
+	private JFrame login_UI;
 	
 	public static void main(String[] args) {
 		// TODO 로그인 창
@@ -64,6 +55,8 @@ public class LOGIN extends JFrame {
 	
 	//GUI 설정
 	public LOGIN() {
+		
+		login_UI = this;
 		
 		//배경 패널 설정
 		c.setLayout(new BorderLayout());
@@ -190,6 +183,7 @@ public class LOGIN extends JFrame {
 			}			
 		}
 
+		@SuppressWarnings("deprecation")
 		@Override
 		public void focusLost(FocusEvent e) {
 			if(e.getSource() == ID && ID.getText().equals("")) {
@@ -211,7 +205,7 @@ public class LOGIN extends JFrame {
 			
 			if(Key_code == KeyEvent.VK_ENTER) {
 				//System.out.print("엔터입력");
-				Login_bt.action(null, e);
+				Login_bt.doClick();
 			}
 		}
 
@@ -225,6 +219,8 @@ public class LOGIN extends JFrame {
 	
 	class Action_event implements ActionListener{
 
+		
+		@SuppressWarnings("deprecation")
 		@Override
 		public void actionPerformed(ActionEvent e) {
 
@@ -241,16 +237,15 @@ public class LOGIN extends JFrame {
 				}
 			}
 			if(e.getSource() == Join_bt) {
-				new JOIN_UI();
-
+				new JOIN_UI(login_UI);
+				setVisible(false);
 			}
-			
-			
 		}
 		
 	}
 }
 
+@SuppressWarnings("serial")
 class fail_popup extends JDialog {
 
 	public fail_popup(String text) {
