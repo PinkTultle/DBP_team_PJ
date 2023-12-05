@@ -43,6 +43,7 @@ public class LOGIN extends JFrame {
 	private FocusListener fe = new Focus_event();
 	private KeyListener Ke = new Focus_event();
 	private ActionListener Ae = new Action_event();
+	private JFrame login_UI;
 	
 	public static void main(String[] args) {
 		// TODO 로그인 창
@@ -54,6 +55,8 @@ public class LOGIN extends JFrame {
 	
 	//GUI 설정
 	public LOGIN() {
+		
+		login_UI = this;
 		
 		//배경 패널 설정
 		c.setLayout(new BorderLayout());
@@ -230,7 +233,7 @@ public class LOGIN extends JFrame {
 				}
 			}
 			if(e.getSource() == Join_bt) {
-				new JOIN_UI();
+				new JOIN_UI(login_UI);
 				setVisible(false);
 			}
 		}

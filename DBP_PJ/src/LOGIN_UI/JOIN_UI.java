@@ -5,9 +5,12 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Image;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
+import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -29,22 +32,28 @@ public class JOIN_UI extends JDialog {
 	private ImageIcon join_logo = new ImageIcon("./image/join_LOGO.png"),
 			close_img = new ImageIcon(),
 			join_img = new ImageIcon();
+	private JButton id_bt, close_bt, join_bt;
+	private JFrame login_UI;
 			
 	private int width = 60;
+	
 
 	public static void main(String[] args) {
-		new JOIN_UI();
+		new JOIN_UI(null);
 	}
 	
 	
 	
-	public JOIN_UI() {
+	public JOIN_UI(JFrame login_UI) {
+		
+		//로그인창 객체 저장
+		this.login_UI = login_UI;
 		
 		setTitle("회원가입");
 		c.setLayout(new BorderLayout());
 		setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 		
-		setSize(600, 500);
+		setSize(600, 530);
 		
 		c.setBorder(new EmptyBorder(5, 5, 5, 5));
 		c.setBackground(new Color(0xFFFBF5));
@@ -65,7 +74,7 @@ public class JOIN_UI extends JDialog {
 		id_l = new Text("ID ", font);
 		id_l.setLocation(40, 100);
 		id_tf = new input_feild("입력하세요", font);
-		id_tf.setSize(250, 30);
+		id_tf.setSize(220, 30);
 		id_tf.setLocation(id_l.getX() + id_l.getWidth(), id_l.getY()+3);
 		
 		pw_l = new Text("PW ", font);
@@ -89,8 +98,34 @@ public class JOIN_UI extends JDialog {
 		email_tf.setSize(150, 30);
 		email_tf.setLocation(email_l.getX() + email_l.getWidth(), email_l.getY()+3);
 		
+		//버튼 리스너
+		BT_Listener lis = new BT_Listener();
+		
+		
+		id_bt = new JButton("중복확인");
+		id_bt.setBounds(id_tf.getX()+id_tf.getWidth(), id_tf.getY(), 70, 30);
+		id_bt.setOpaque(false);
+		id_bt.setBackground(null);
+		id_bt.setBorder(null);
+		id_bt.addActionListener(lis);
+		
+		
+		close_bt = new JButton("닫기");
+		close_bt.setBounds(180, 400, 100, 30);
+		close_bt.addActionListener(lis);
+		
+		
+		
+		join_bt = new JButton("가입");
+		join_bt.setBounds(close_bt.getX()+close_bt.getWidth()+30, close_bt.getY(), 100, 30);
+		join_bt.addActionListener(lis);
 		
 		Join_pane.add(logo_l);
+		
+		
+		Join_pane.add(id_bt);
+		Join_pane.add(close_bt);
+		Join_pane.add(join_bt);
 		
 		Join_pane.add(id_l);
 		Join_pane.add(pw_l);
@@ -102,13 +137,6 @@ public class JOIN_UI extends JDialog {
 		Join_pane.add(name_tf);
 		Join_pane.add(call_tf);
 		Join_pane.add(email_tf);
-
-		
-		
-		
-		
-		
-		
 		
 		c.setFocusable(true);
 		c.requestFocus();
@@ -124,7 +152,7 @@ public class JOIN_UI extends JDialog {
 			super.paintComponent(g);
 			Image TF_back = new ImageIcon("./image/TextFeild.png").getImage();
 			
-			g.drawImage(TF_back, id_l.getX() + id_l.getWidth(), id_l.getY(), 250, 35, null);
+			g.drawImage(TF_back, id_l.getX() + id_l.getWidth(), id_l.getY(), 220, 35, null);
 			g.drawImage(TF_back, pw_l.getX() + pw_l.getWidth(), pw_l.getY(), 300, 35, null);
 			g.drawImage(TF_back, name_l.getX() + name_l.getWidth(), name_l.getY(), 300, 35, null);
 			g.drawImage(TF_back, call_l.getX() + call_l.getWidth(), call_l.getY(), 300, 35, null);
@@ -161,6 +189,31 @@ public class JOIN_UI extends JDialog {
 			setBorder(null);
 			
 		}
+	}
+	
+	class BT_Listener implements ActionListener{
+
+		public void actionPerformed(ActionEvent e) {
+			
+			if(e.getSource() == id_bt) {
+				System.out.println("중복 실행");
+			}
+			
+			if(e.getSource() == join_bt){
+				System.out.println("가입 실행");
+			}
+			
+			if(e.getSource() == close_bt) {
+				dispose();
+
+				if(login_UI != null)
+					login_UI.setVisible(true);
+				else
+					new LOGIN();
+			}
+			
+			
+		}	
 	}
 	
 	

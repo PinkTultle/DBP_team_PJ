@@ -8,7 +8,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-public class user_connect_class {
+public class DAO {
 	
 	Connection con = null;
 	ResultSet rs;
@@ -20,7 +20,7 @@ public class user_connect_class {
 	String id = "ABD";
 	String pw = "1234";
 	
-	public user_connect_class() {
+	public DAO() {
 		try {
 			Class.forName("oracle.jdbc.driver.OracleDriver");
 			System.out.print("드라이브 적재 성공");
@@ -33,6 +33,10 @@ public class user_connect_class {
 		} catch (SQLException e) {
 			System.out.println("연결에 실패하였습니다.");
 		}
+	}
+	
+	public static void main(String[] args) {
+		new DAO();
 	}
 	
 
