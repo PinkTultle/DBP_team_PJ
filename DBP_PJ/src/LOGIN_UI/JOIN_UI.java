@@ -115,7 +115,6 @@ public class JOIN_UI extends JDialog {
 		close_bt.addActionListener(lis);
 		
 		
-		
 		join_bt = new JButton("가입");
 		join_bt.setBounds(close_bt.getX()+close_bt.getWidth()+30, close_bt.getY(), 100, 30);
 		join_bt.addActionListener(lis);
