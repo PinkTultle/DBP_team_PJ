@@ -35,7 +35,7 @@ public class LOGIN extends JFrame {
 	private JTextField ID;
 	private JPasswordField PW;
 	private JButton Login_bt, Join_bt;
-	private ImageIcon LOGO_img, login_img, join_img;
+	private ImageIcon LOGO_img, login_img, join_img, login_press_img, join_press_img;
 	private JLabel LOGO, ID_l, PW_l;
 	private Font font = new Font("맑은 고딕", Font.ROMAN_BASELINE + Font.PLAIN, 18);
 	private JPanel c = (JPanel) getContentPane(),
@@ -125,8 +125,9 @@ public class LOGIN extends JFrame {
 				
 		//로그인, 회원가입 버튼
 		join_img = new ImageIcon("image/join.png");
+		join_press_img = new ImageIcon("./image/join_press.png");
 		Join_bt = new JButton(join_img);
-		Join_bt.setPressedIcon(new ImageIcon("./image/join_press.png"));
+		Join_bt.setPressedIcon(join_press_img);
 		Join_bt.setBounds(PW_l.getX()+30, PW_l.getY()+PW.getHeight()+20, 100, 30);
 		Join_bt.setOpaque(false);
 		Join_bt.setRequestFocusEnabled(false);
@@ -137,8 +138,9 @@ public class LOGIN extends JFrame {
 		login_pane.add(Join_bt);
 		
 		login_img = new ImageIcon("image/login.png");
+		login_press_img = new ImageIcon("./image/login_press.png");
 		Login_bt = new JButton(login_img);
-		Login_bt.setPressedIcon(new ImageIcon("./image/login_press.png"));
+		Login_bt.setPressedIcon(login_press_img);
 		Login_bt.setBounds(Join_bt.getX()+Join_bt.getWidth()+10, Join_bt.getY(), Join_bt.getWidth(), Join_bt.getHeight());
 		Login_bt.setOpaque(false);
 		Login_bt.setRequestFocusEnabled(false);
