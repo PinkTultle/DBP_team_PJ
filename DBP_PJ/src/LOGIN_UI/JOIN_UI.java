@@ -29,11 +29,17 @@ public class JOIN_UI extends JDialog {
 	private Text id_l, pw_l, email_l, name_l, call_l;
 	private input_feild id_tf, pw_tf, email_tf, name_tf, call_tf;
 	private Font font = new Font("맑은 고딕", Font.ROMAN_BASELINE + Font.PLAIN, 18);
-	private ImageIcon join_logo = new ImageIcon("./image/join_LOGO.png"),
-			close_img = new ImageIcon(),
-			join_img = new ImageIcon();
 	private JButton id_bt, close_bt, join_bt;
 	private JFrame login_UI;
+	
+	private ImageIcon join_logo = new ImageIcon("./image/join_LOGO.png"),
+			close_img = new ImageIcon("./image/close.png"),
+			close_press_img = new ImageIcon("./image/close_press.png"),
+			join_img = new ImageIcon("./image/join_2.png"),
+			join_press_img = new ImageIcon("./image/join_2_press.png"),
+			id_check = new ImageIcon("./image/id_check.png"),
+			id_check_press = new ImageIcon("./image/id_check_press.png");
+	
 			
 	private int width = 60;
 	
@@ -78,7 +84,7 @@ public class JOIN_UI extends JDialog {
 		id_tf.setLocation(id_l.getX() + id_l.getWidth(), id_l.getY()+3);
 		
 		pw_l = new Text("PW ", font);
-		pw_l.setLocation(id_l.getX(), id_l.getY()+width);
+		pw_l.setLocation(id_l.getX(), id_l.getY()+width+5);
 		pw_tf = new input_feild("입력하세요", font);
 		pw_tf.setLocation(pw_l.getX() + pw_l.getWidth(), pw_l.getY()+3);
 		
@@ -102,21 +108,39 @@ public class JOIN_UI extends JDialog {
 		BT_Listener lis = new BT_Listener();
 		
 		
-		id_bt = new JButton("중복확인");
-		id_bt.setBounds(id_tf.getX()+id_tf.getWidth(), id_tf.getY(), 70, 30);
+		id_bt = new JButton();
+		id_bt.setIcon(id_check);
+		id_bt.setPressedIcon(id_check_press);
+		id_bt.setBounds(id_tf.getX()+id_tf.getWidth()+5, id_tf.getY(), 70, 30);
 		id_bt.setOpaque(false);
 		id_bt.setBackground(null);
 		id_bt.setBorder(null);
+		id_bt.setFocusPainted(false);
+		id_bt.setContentAreaFilled(false);
 		id_bt.addActionListener(lis);
 		
 		
-		close_bt = new JButton("닫기");
+		close_bt = new JButton();
+		close_bt.setIcon(close_img);
+		close_bt.setPressedIcon(close_press_img);
 		close_bt.setBounds(180, 400, 100, 30);
+		close_bt.setOpaque(false);
+		close_bt.setBorder(null);
+		close_bt.setBackground(null);
+		close_bt.setFocusPainted(false);
+		close_bt.setContentAreaFilled(false);
 		close_bt.addActionListener(lis);
 		
 		
-		join_bt = new JButton("가입");
-		join_bt.setBounds(close_bt.getX()+close_bt.getWidth()+30, close_bt.getY(), 100, 30);
+		join_bt = new JButton();
+		join_bt.setIcon(join_img);
+		join_bt.setPressedIcon(join_press_img);
+		join_bt.setBounds(close_bt.getX()+close_bt.getWidth()+20, close_bt.getY(), 100, 30);
+		join_bt.setOpaque(false);
+		join_bt.setBorder(null);
+		join_bt.setBackground(null);
+		join_bt.setFocusPainted(false);
+		join_bt.setContentAreaFilled(false);
 		join_bt.addActionListener(lis);
 		
 		Join_pane.add(logo_l);

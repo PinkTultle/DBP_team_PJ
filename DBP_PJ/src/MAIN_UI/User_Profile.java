@@ -51,7 +51,7 @@ public class User_Profile extends JFrame {
         buttonPanel.setLayout(new FlowLayout(FlowLayout.RIGHT));
         buttonPanel.setBackground(new Color(0xF7EFE5));
         ImageIcon Withdrawalicon = new ImageIcon("image/Withdrawal.png");
-        ImageIcon Closeicon = new ImageIcon("image/Close.png");
+        ImageIcon Closeicon = new ImageIcon("image/close.png");
 
         // 탈퇴 버튼
         JButton withdrawButton = new JButton(Withdrawalicon);
@@ -61,7 +61,8 @@ public class User_Profile extends JFrame {
         withdrawButton.setOpaque(false);
         withdrawButton.setBorder(null);
         withdrawButton.setBackground(null);
-        
+        withdrawButton.setBorderPainted(false);
+        withdrawButton.setContentAreaFilled(false);
         withdrawButton.addActionListener(e -> {
             // 탈퇴 기능 추가
         });
