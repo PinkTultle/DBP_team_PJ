@@ -6,9 +6,14 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.border.EmptyBorder;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import javax.swing.RowFilter;
+import javax.swing.table.TableRowSorter;
 
 public class Main extends JFrame {
 	private JPanel currentCenterPanel;
+	private JTextField searchTextField;
+	private TableRowSorter<DefaultTableModel> sorter;
+
     public Main() {
         // 프레임 설정
         setTitle("MAIN");
@@ -72,10 +77,16 @@ public class Main extends JFrame {
         JPanel centerPanel = new JPanel();
         centerPanel.setLayout(new BorderLayout());
         centerPanel.setBackground(Color.WHITE); // 배경색을 원하는 색으로 변경할 수 있습니다.
-       
+
         // 테이블 모델 생성
-        DefaultTableModel tableModel = new DefaultTableModel();
+        DefaultTableModel tableModel = new DefaultTableModel() {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false; // 모든 셀을 편집 불가능하도록 설정
+            }
+        };
         tableModel.addColumn("레시피 번호");
+        tableModel.addColumn("카테고리");
         tableModel.addColumn("제목");
         tableModel.addColumn("레시피 내용");
         tableModel.addColumn("추천수");
@@ -83,9 +94,23 @@ public class Main extends JFrame {
 
         // 테이블 생성
         JTable table = new JTable(tableModel);
-
+        table.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                if (e.getClickCount() == 2) { // 더블클릭 이벤트
+                    int selectedRow = table.getSelectedRow();
+                    if (selectedRow != -1) {
+                        // Recipe_Detail.java에 정보 전달
+                        SwingUtilities.invokeLater(() -> {
+                            Recipe_Detail recipeDetail = new Recipe_Detail();
+                            recipeDetail.setVisible(true);
+                        });
+                    }
+                }
+            }
+        });
         for (int i = 0; i < 40; i++) {
-            Object[] rowData = {i + 1, "제목 " + (i + 1), "레시피 내용 " + (i + 1), (int) (Math.random() * 100)};
+            Object[] rowData = {i + 1, "?식", "제목 " + (i + 1), "레시피 내용 " + (i + 1), (int) (Math.random() * 100)};
             tableModel.addRow(rowData);
         }
         // 스크롤 패널에 테이블 추가
@@ -94,14 +119,24 @@ public class Main extends JFrame {
         scrollPane.setPreferredSize(new Dimension(500, 500));
         centerPanel.add(scrollPane, BorderLayout.WEST);
         scrollPane.setBackground(Color.WHITE);
+        
+        JPanel searchPanel = new JPanel();
+        searchTextField = new JTextField(6);
+        JButton searchButton = new JButton("검색");
+        
+        searchPanel.setBackground(Color.WHITE);
+        searchPanel.add(searchTextField);
+        searchPanel.add(searchButton);
 
+        // 상단 패널에 검색 패널 추가
+        centerPanel.add(searchPanel);
         // 버튼을 담을 패널 생성
         JPanel buttonPanel = new JPanel();
         buttonPanel.setLayout(new GridLayout(3, 1, 5, 10));
         buttonPanel.setBorder(new EmptyBorder(200, 10, 50, 50)); // 하단과 오른쪽의 여백 조절
-        JButton button1 = new JButton("버튼 1");
-        JButton button2 = new JButton("버튼 2");
-        JButton button3 = new JButton("버튼 3");
+        JButton button1 = new JButton("등록");
+        JButton button2 = new JButton("삭제");
+        JButton button3 = new JButton("추천");
 
         // 버튼 크기 조절
         Dimension buttonSize = new Dimension(150, 50);
@@ -115,6 +150,31 @@ public class Main extends JFrame {
         centerPanel.add(buttonPanel, BorderLayout.EAST);
         buttonPanel.setBackground(Color.WHITE);
         
+        button2.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                int selectedRow = table.getSelectedRow();
+                if (selectedRow != -1) {
+                    // 선택된 행 삭제
+                    tableModel.removeRow(selectedRow);
+                } else {
+                    JOptionPane.showMessageDialog(null, "삭제할 행을 선택하세요.", "알림", JOptionPane.WARNING_MESSAGE);
+                }
+            }
+        });
+        button3.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                int selectedRow = table.getSelectedRow();
+                if (selectedRow != -1) {
+                    // 선택된 행의 추천수 증가
+                    int currentRecommendation = (int) tableModel.getValueAt(selectedRow, 4);
+                    tableModel.setValueAt(currentRecommendation + 1, selectedRow, 4);
+                } else {
+                    JOptionPane.showMessageDialog(null, "추천할 행을 선택하세요.", "알림", JOptionPane.WARNING_MESSAGE);
+                }
+            }
+        });
         // 레이아웃 설정
         setLayout(new BorderLayout());
         add(topPanel, BorderLayout.NORTH);
@@ -156,7 +216,12 @@ public class Main extends JFrame {
         reviewPanel.setBackground(Color.WHITE);
 
         // 테이블 모델 생성
-        DefaultTableModel reviewTableModel = new DefaultTableModel();
+        DefaultTableModel reviewTableModel = new DefaultTableModel(){
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false; // 모든 셀을 편집 불가능하도록 설정
+            }
+        };
         reviewTableModel.addColumn("리뷰 번호");
         reviewTableModel.addColumn("레시피 번호");
         reviewTableModel.addColumn("내용");
@@ -164,7 +229,21 @@ public class Main extends JFrame {
 
         // 테이블 생성
         JTable reviewTable = new JTable(reviewTableModel);
-
+        reviewTable.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                if (e.getClickCount() == 2) { // 더블클릭 이벤트
+                    int selectedRow = reviewTable.getSelectedRow();
+                    if (selectedRow != -1) {
+                        // Recipe_Detail.java에 정보 전달
+                        SwingUtilities.invokeLater(() -> {
+                            Recipe_Detail recipeDetail = new Recipe_Detail();
+                            recipeDetail.setVisible(true);
+                        });
+                    }
+                }
+            }
+        });
         for (int i = 0; i < 40; i++) {
             Object[] rowData = {i + 1, "레시피 번호 " + (i + 1), "리뷰 내용 " + (i + 1), (int) (Math.random() * 5) + 1};
             reviewTableModel.addRow(rowData);
@@ -176,27 +255,46 @@ public class Main extends JFrame {
         reviewScrollPane.setPreferredSize(new Dimension(500, 500));
         reviewPanel.add(reviewScrollPane, BorderLayout.WEST);
         reviewScrollPane.setBackground(Color.WHITE);
-
+        
+        JPanel searchPanel = new JPanel();
+        searchTextField = new JTextField(6);
+        JButton searchButton = new JButton("검색");
+        
+        searchPanel.setBackground(Color.WHITE);
+        searchPanel.add(searchTextField);
+        searchPanel.add(searchButton);
+        
+        reviewPanel.add(searchPanel);
         // 버튼을 담을 패널 생성
         JPanel reviewButtonPanel = new JPanel();
         reviewButtonPanel.setLayout(new GridLayout(3, 1, 5, 10));
         reviewButtonPanel.setBorder(new EmptyBorder(200, 10, 50, 50)); // 하단과 오른쪽의 여백 조절
-        JButton reviewButton1 = new JButton("버튼 1");
-        JButton reviewButton2 = new JButton("버튼 2");
-        JButton reviewButton3 = new JButton("버튼 3");
+        JButton reviewButton1 = new JButton("등록");
+        JButton reviewButton2 = new JButton("삭제");
 
         // 버튼 크기 조절
         Dimension reviewButtonSize = new Dimension(150, 50);
         reviewButton1.setPreferredSize(reviewButtonSize);
         reviewButton2.setPreferredSize(reviewButtonSize);
-        reviewButton3.setPreferredSize(reviewButtonSize);
 
         reviewButtonPanel.add(reviewButton1);
         reviewButtonPanel.add(reviewButton2);
-        reviewButtonPanel.add(reviewButton3);
         reviewPanel.add(reviewButtonPanel, BorderLayout.EAST);
         reviewButtonPanel.setBackground(Color.WHITE);
 
+        reviewButton2.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                int selectedRow = reviewTable.getSelectedRow();
+                if (selectedRow != -1) {
+                    // 선택된 행 삭제
+                	reviewTableModel.removeRow(selectedRow);
+                } else {
+                    JOptionPane.showMessageDialog(null, "삭제할 행을 선택하세요.", "알림", JOptionPane.WARNING_MESSAGE);
+                }
+            }
+        });
+       
         // 기존 중앙 패널을 제거하고 리뷰 패널로 변경
         remove(currentCenterPanel);
         currentCenterPanel = reviewPanel;
@@ -213,15 +311,34 @@ public class Main extends JFrame {
     	BestRecipePanel.setBackground(Color.WHITE);
 
         // 테이블 모델 생성
-        DefaultTableModel BestRecipeTableModel = new DefaultTableModel();
+        DefaultTableModel BestRecipeTableModel = new DefaultTableModel(){
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false; // 모든 셀을 편집 불가능하도록 설정
+            }
+        };
         BestRecipeTableModel.addColumn("카테고리");
         BestRecipeTableModel.addColumn("레시피 번호");
         BestRecipeTableModel.addColumn("레시피 제목");
-
+        BestRecipeTableModel.addColumn("추천수");
 
         // 테이블 생성
         JTable BestRecipeTable = new JTable(BestRecipeTableModel);
-
+        BestRecipeTable.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                if (e.getClickCount() == 2) { // 더블클릭 이벤트
+                    int selectedRow = BestRecipeTable.getSelectedRow();
+                    if (selectedRow != -1) {
+                        // Recipe_Detail.java에 정보 전달
+                        SwingUtilities.invokeLater(() -> {
+                            Recipe_Detail recipeDetail = new Recipe_Detail();
+                            recipeDetail.setVisible(true);
+                        });
+                    }
+                }
+            }
+        });
         for (int i = 0; i < 1; i++) {
             Object[] rowData = {"카테고리 " + (i + 1), i + 1, "제목 " + (i + 1), (int) (Math.random() * 5) + 1};
             BestRecipeTableModel.addRow(rowData);
@@ -238,22 +355,29 @@ public class Main extends JFrame {
         JPanel BestRecipeButtonPanel = new JPanel();
         BestRecipeButtonPanel.setLayout(new GridLayout(3, 1, 5, 10));
         BestRecipeButtonPanel.setBorder(new EmptyBorder(200, 10, 50, 50)); // 하단과 오른쪽의 여백 조절
-        JButton BestRecipeButton1 = new JButton("버튼 1");
-        JButton BestRecipeButton2 = new JButton("버튼 2");
-        JButton BestRecipeButton3 = new JButton("버튼 3");
+        JButton BestRecipeButton1 = new JButton("추천");
 
         // 버튼 크기 조절
         Dimension BestRecipeButtonSize = new Dimension(150, 50);
         BestRecipeButton1.setPreferredSize(BestRecipeButtonSize);
-        BestRecipeButton2.setPreferredSize(BestRecipeButtonSize);
-        BestRecipeButton3.setPreferredSize(BestRecipeButtonSize);
 
         BestRecipeButtonPanel.add(BestRecipeButton1);
-        BestRecipeButtonPanel.add(BestRecipeButton2);
-        BestRecipeButtonPanel.add(BestRecipeButton3);
         BestRecipePanel.add(BestRecipeButtonPanel, BorderLayout.EAST);
         BestRecipeButtonPanel.setBackground(Color.WHITE);
-
+        BestRecipeButton1.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                int selectedRow = BestRecipeTable.getSelectedRow();
+                if (selectedRow != -1) {
+                    // 선택된 행의 추천수 증가
+                    int currentRecommendation = (int) BestRecipeTableModel.getValueAt(selectedRow, 3);
+                    BestRecipeTableModel.setValueAt(currentRecommendation + 1, selectedRow, 3);
+                } else {
+                    JOptionPane.showMessageDialog(null, "추천할 행을 선택하세요.", "알림", JOptionPane.WARNING_MESSAGE);
+                }
+            }
+        });
+        
         // 기존 중앙 패널을 제거하고 리뷰 패널로 변경
         remove(currentCenterPanel);
         currentCenterPanel = BestRecipePanel;

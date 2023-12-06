@@ -1,5 +1,3 @@
-package MAIN_UI;
-
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -51,32 +49,22 @@ public class User_Profile extends JFrame {
         buttonPanel.setLayout(new FlowLayout(FlowLayout.RIGHT));
         buttonPanel.setBackground(new Color(0xF7EFE5));
         ImageIcon Withdrawalicon = new ImageIcon("image/Withdrawal.png");
-        ImageIcon Closeicon = new ImageIcon("image/close.png");
+        ImageIcon Closeicon = new ImageIcon("image/Close.png");
 
         // 탈퇴 버튼
         JButton withdrawButton = new JButton(Withdrawalicon);
-        withdrawButton.setPressedIcon(new ImageIcon("image/Withdrawal_press.png"));
-        withdrawButton.setContentAreaFilled(false);
-        withdrawButton.setRequestFocusEnabled(false);
-        withdrawButton.setOpaque(false);
         withdrawButton.setBorder(null);
         withdrawButton.setBackground(null);
-        withdrawButton.setBorderPainted(false);
-        withdrawButton.setContentAreaFilled(false);
         withdrawButton.addActionListener(e -> {
             // 탈퇴 기능 추가
         });
 
         // 닫기 버튼
         JButton closeButton = new JButton(Closeicon);
-        closeButton.setPressedIcon(new ImageIcon("image/close_press.png"));
-        closeButton.setContentAreaFilled(false);
-        closeButton.setOpaque(false);
-        closeButton.setRequestFocusEnabled(false);
         closeButton.setBorder(null);
         closeButton.setBackground(null);
         closeButton.addActionListener(e -> {
-            System.exit(0);
+        	dispose();
         });
 
         // 버튼을 패널에 추가
