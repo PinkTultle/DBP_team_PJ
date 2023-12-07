@@ -26,7 +26,6 @@ public class Review_DTO {
 		this.ID = Id;
 	}
 	
-	
 	//아래는 접근자
 	public int getREVIEW_NUMBER() {	return REVIEW_NUMBER;}
 	public int getRECIPE_NUMVER() { return RECIPE_NUMVER;}
@@ -43,14 +42,4 @@ public class Review_DTO {
 	public void setID(String id) {						this.ID = id;}
 	
 	
-	
-	
-	/*
-	리뷰번호	NUMBER(3,0)
-	레시피번호	NUMBER(30,0)
-	리뷰내용	VARCHAR2(300 BYTE)
-	작성시간	DATE
-	평점	NUMBER(5,0)
-	작성자ID	VARCHAR2(30 BYTE)
-	*/
 }
