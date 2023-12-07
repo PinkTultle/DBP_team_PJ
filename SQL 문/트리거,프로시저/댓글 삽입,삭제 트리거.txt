@@ -1,0 +1,47 @@
+-- 2.1 댓글 삽입 시 댓글 번호 1증가해서 삽입하는 트리거
+CREATE OR REPLACE TRIGGER PLUS_coCount
+   BEFORE INSERT
+   ON 댓글
+   FOR EACH ROW 
+   DECLARE
+   Co_Num NUMBER; -- 댓글 번호
+BEGIN
+    SELECT MAX(댓글번호) INTO Co_Num FROM 댓글 WHERE 레시피번호 = :NEW.레시피번호;
+    :NEW.댓글번호 := Co_Num + 1; 
+END;
+
+-- TEST 코드
+INSERT INTO 댓글 (댓글번호, 레시피번호, 작성시간, 댓글내용, 작성자ID) VALUES (1, 69, '2023-8-28', '좋은 레시피 감사합니다', 'HjK4Bji');
+-- 레시피번호를 바꿔가며 INSERT 해볼것!!!!!!!!
+select * from 댓글 ORDER BY 댓글번호 DESC;
+
+-- 삭제된 댓글의 레시피의 번호를 매개변수로 받아 해당 레시피의 댓글을 갱신하는 프로시저
+CREATE OR REPLACE PROCEDURE Reset_Re_coNum(Re_Num IN NUMBER) AS
+  Plus_co_Num NUMBER := 1;  -- 부여할 댓글번호 
+  
+  co_Num VARCHAR2(20); -- 댓글 번호
+  
+ -- 커서 정의
+  CURSOR C IS SELECT 댓글번호 FROM 댓글 WHERE 레시피번호 = Re_Num;
+BEGIN
+-- 커서 열기
+   OPEN C;  
+ -- 데이터 인출 및 처리
+   LOOP 
+        FETCH  C INTO co_Num; -- 레시피번호 기준 커서 LOOP
+        EXIT WHEN C % NOTFOUND;
+        -- 데이터가 없으면 LOOP 종료
+        UPDATE 댓글 SET 댓글번호 = plus_co_num WHERE 레시피번호 = Re_Num AND 댓글번호 = co_Num ;
+        plus_co_num := plus_co_num + 1;
+   END LOOP;
+ -- 커서 닫기
+   CLOSE C; 
+END ;
+-- 위 프로시저 테스트 코드
+select * from 댓글 order by 댓글번호 desc;
+
+delete from 댓글 where 레시피번호 = 70 and 댓글번호 = 2;
+
+execute Reset_Re_coNum(70);
+-- 한 레시피 번호에서 가운데 댓글번호를 삭제 하고 해당 레시피번호를 매개변수로 호출해볼것
+
