@@ -41,7 +41,7 @@ public class Recipe_DTO {
 	public void setRECIPE_NUMBER(int recipe_number) {	this.RECIPE_NUMBER = recipe_number;}
 	public void setTITLE(String tITLE) {				this.TITLE = tITLE;}
 	public void setID(String iD) {						this.ID = iD;}
-	public void setCONRENT(String cONRENT) {			this.CONTENT = cONRENT;}
+	public void setCONTENT(String cONTENT) {			this.CONTENT = cONTENT;}
 	public void setCATEGORY(String cATEGORY) {			this.CATEGORY = cATEGORY;}
 	public void setDESCRIPTION(String dESCRIPTION) {	this.DESCRIPTION = dESCRIPTION;	}
 	public void setVIEW_COUNT(int vIEW_COUNT) {			this.VIEW_COUNT = vIEW_COUNT;}
