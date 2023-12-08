@@ -178,7 +178,7 @@ public class DAO {
 		DB_Connect();
 		
 		sql = "INSERT INTO 레시피 (제목, 작성자ID, 작성내용, 작성시간, 카테고리, 레시피설명, 조회수, 추천수, 난이도),"
-				+ " VALUES ('?', '?', '?', '?', '?', '?', 0, 0, ?);";
+				+ " VALUES ('?', '?', '?', ?, '?', '?', 0, 0, ?);";
 		try {
 			pstmt = con.prepareStatement(sql);
 			
@@ -206,19 +206,134 @@ public class DAO {
 	}
 	
 	//다. 리뷰등록 시 사용자가 입력한 정보와 레시피 번호를 리뷰 테이블에 추가한다.
-    
+	private boolean Insert_review(Review_DTO dto) {
+		
+		DB_Connect();
+		
+		sql = "INSERT INTO 리뷰 (리뷰번호, 레시피번호, 리뷰내용, 작성시간, 평점, 작성자ID),"
+				+ " VALUES ( ?, ?, '?', ?, ?, ?);";
+		try {
+			pstmt = con.prepareStatement(sql);
+			
+			pstmt.setInt(1, dto.getREVIEW_NUMBER());
+			pstmt.setInt(2, dto.getRECIPE_NUMVER());
+			pstmt.setString(3, dto.getCONTENT());
+			pstmt.setDate(4, dto.getDATE());
+			pstmt.setInt(5, dto.getGRADE());
+			pstmt.setString(6, dto.getID());
+			
+			ex_num = pstmt.executeUpdate();
+			
+			if(ex_num == 1) {
+				return true;
+			}else throw(null);
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return false;
+		}
+		finally {
+			End_of_use();
+		}		
+	}
 
 
 
 	//라. 댓글 등록 시 사용자가 입력한 정보와 레시피 번호를 댓글 테이블에 추가한다. 
-	
+	private boolean Insert_comment(Comments_DTO dto) {
+		
+		DB_Connect();
+		
+		sql = "INSERT INTO 댓글 (레시피번호, 작성시간, 댓글내용, 작성자ID),"
+				+ " VALUES (?, '?', '?', '?');";
+		try {
+			pstmt = con.prepareStatement(sql);
+			
+			pstmt.setInt(1, dto.getRECIPE_NUMBER());
+			pstmt.setDate(2, dto.getDATE());
+			pstmt.setString(3, dto.getCONTENT());
+			pstmt.setString(4, dto.getID());
+			
+			ex_num = pstmt.executeUpdate();
+			
+			if(ex_num == 1) {
+				return true;
+			}else throw(null);
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return false;
+		}
+		finally {
+			End_of_use();
+		}		
+	}
 	
 	
 	//SELECT
+	//. 로그인 시 사용자의 ID와 비밀번호로 사용자 테이블에 사용자 존재 여부를 검색한다. 
 	
+	
+	//나. 회원가입 시 사용자가 입력한 ID가 이미 존재하는 ID인지 검색한다.
+	
+	
+	//다. 회원가입 창의 아이디 중복조회 클릭 시 사용자 테이블에 중복되는 아이디를 검색한다.
+	
+	
+	//라. 사용자 프로필 조회 시 사용자 테이블에서 ID로 사용자 정보를 검색한다. 
+	
+	
+	//마. 레시피 검색 시 카테고리로 해당 카테고리의 레시피를 검색한다.
+	
+	
+	//바. 레시피 검색 시 레시피 이름으로 해당 이름의 레시피를 검색한다.
+	
+	
+	//사. 레시피 검색 시 카테고리와 레시피 이름으로 카테고리와 이름이 일치하는 레시피를 검색한다.
+	
+	
+	//아. 레시피 열람 시 레시피 번호로 해당 레시피를 검색하여 레시피 정보를 반환한다.	
+	
+	
+	//자. 레시피 열람 시 레시피 번호로 해당 레시피의 리뷰를 검색한다.
+	
+	
+	//차. 레시피 열람 시 레시피 번호로 해당 레시피의 댓글을 검색하여 반환한다.
+	
+	
+	//카. 리뷰검색 시 리뷰 이름으로 해당 이름의 리뷰를 검색한다.
+	
+	
+	//타. 리뷰 열람 시 리뷰번호와 레시피 번호로 해당 리뷰를 검색하여 데이터를 반환한다.
+
 	
 	//DELETE
-	
+	//가. 레시피 삭제 시, 레시피 번호로 레시피 테이블에서 해당 레시피를 삭제한다.
+	private boolean Delete_recipe(int Recipe_num) {
+		
+		DB_Connect();
+		
+		sql = "delete table 레시피 whrer 레시피번호 = ?";
+		
+		try {
+			pstmt = con.prepareStatement(sql);
+			
+			pstmt.setInt(1, Recipe_num);
+			
+			ex_num = pstmt.executeUpdate(sql);
+			
+			if(ex_num == 1) {
+				return true;
+			}
+			else throw(null);
+			
+		}catch(Exception e) {
+			return false;
+		}
+		finally {
+			End_of_use();
+		}	
+	}
 	
 	//CallableStatement 구현--------------------------------------------------------
 	
