@@ -12,6 +12,8 @@ import javax.swing.RowFilter;
 import javax.swing.table.TableRowSorter;
 
 public class Main extends JFrame {
+	private DefaultTableModel tableModel;
+	private DefaultTableModel BestRecipeTableModel;
 	private JPanel currentCenterPanel;
 	private JTextField searchTextField;
 	private TableRowSorter<DefaultTableModel> sorter;
@@ -81,7 +83,7 @@ public class Main extends JFrame {
         centerPanel.setBackground(Color.WHITE); // 배경색을 원하는 색으로 변경할 수 있습니다.
 
         // 테이블 모델 생성
-        DefaultTableModel tableModel = new DefaultTableModel() {
+        tableModel = new DefaultTableModel() {
             @Override
             public boolean isCellEditable(int row, int column) {
                 return false; // 모든 셀을 편집 불가능하도록 설정
@@ -112,7 +114,14 @@ public class Main extends JFrame {
             }
         });
         for (int i = 0; i < 40; i++) {
-            Object[] rowData = {i + 1, "?식", "제목 " + (i + 1), "레시피 내용 " + (i + 1), (int) (Math.random() * 100)};
+            String[] categories = {"한식", "중식", "일식", "양식"};
+            Object[] rowData = {
+                i + 1,
+                categories[(int) (Math.random() * categories.length)], // Randomly select a category
+                "제목 " + (i + 1),
+                "레시피 내용 " + (i + 1),
+                (int) (Math.random() * 100)
+            };
             tableModel.addRow(rowData);
         }
         // 스크롤 패널에 테이블 추가
@@ -313,7 +322,7 @@ public class Main extends JFrame {
     	BestRecipePanel.setBackground(Color.WHITE);
 
         // 테이블 모델 생성
-        DefaultTableModel BestRecipeTableModel = new DefaultTableModel(){
+    	BestRecipeTableModel = new DefaultTableModel() {
             @Override
             public boolean isCellEditable(int row, int column) {
                 return false; // 모든 셀을 편집 불가능하도록 설정
@@ -339,16 +348,13 @@ public class Main extends JFrame {
                         });
                     }
                 }
-            }
+            }	
         });
-        for (int i = 0; i < 1; i++) {
-            Object[] rowData = {"카테고리 " + (i + 1), i + 1, "제목 " + (i + 1), (int) (Math.random() * 5) + 1};
-            BestRecipeTableModel.addRow(rowData);
-        }
+       
 
         // 스크롤 패널에 테이블 추가
         JScrollPane BestRecipeScrollPane = new JScrollPane(BestRecipeTable);
-        BestRecipeScrollPane.setBorder(new EmptyBorder(20, 20, 20, 20));
+        BestRecipeScrollPane.setBorder(new EmptyBorder(126, 20, 150, 20));
         BestRecipeScrollPane.setPreferredSize(new Dimension(500, 500));
         BestRecipePanel.add(BestRecipeScrollPane, BorderLayout.WEST);
         BestRecipeScrollPane.setBackground(Color.WHITE);
@@ -357,29 +363,53 @@ public class Main extends JFrame {
         JPanel BestRecipeButtonPanel = new JPanel();
         BestRecipeButtonPanel.setLayout(new GridLayout(3, 1, 5, 10));
         BestRecipeButtonPanel.setBorder(new EmptyBorder(200, 10, 50, 50)); // 하단과 오른쪽의 여백 조절
-        JButton BestRecipeButton1 = new JButton("추천");
+        JButton BestRecipeButton1 = new JButton("한식");
+        JButton BestRecipeButton2 = new JButton("중식");
+        JButton BestRecipeButton3 = new JButton("일식");
+        JButton BestRecipeButton4 = new JButton("양식");
 
         // 버튼 크기 조절
-        Dimension BestRecipeButtonSize = new Dimension(150, 50);
+        Dimension BestRecipeButtonSize = new Dimension(100, 50);
         BestRecipeButton1.setPreferredSize(BestRecipeButtonSize);
+        BestRecipeButton2.setPreferredSize(BestRecipeButtonSize);
+        BestRecipeButton3.setPreferredSize(BestRecipeButtonSize);
+        BestRecipeButton4.setPreferredSize(BestRecipeButtonSize);
 
         BestRecipeButtonPanel.add(BestRecipeButton1);
+        BestRecipeButtonPanel.add(BestRecipeButton2);
+        BestRecipeButtonPanel.add(BestRecipeButton3);
+        BestRecipeButtonPanel.add(BestRecipeButton4);
         BestRecipePanel.add(BestRecipeButtonPanel, BorderLayout.EAST);
         BestRecipeButtonPanel.setBackground(Color.WHITE);
+       
         BestRecipeButton1.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                int selectedRow = BestRecipeTable.getSelectedRow();
-                if (selectedRow != -1) {
-                    // 선택된 행의 추천수 증가
-                    int currentRecommendation = (int) BestRecipeTableModel.getValueAt(selectedRow, 3);
-                    BestRecipeTableModel.setValueAt(currentRecommendation + 1, selectedRow, 3);
-                } else {
-                    JOptionPane.showMessageDialog(null, "추천할 행을 선택하세요.", "알림", JOptionPane.WARNING_MESSAGE);
-                }
+                // '한식' 버튼 클릭 시, 중앙 패널을 BestRecipe 패널로 변경
+                switchToBestRecipePanel("한식");
             }
         });
-        
+        BestRecipeButton2.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                // '한식' 버튼 클릭 시, 중앙 패널을 BestRecipe 패널로 변경
+                switchToBestRecipePanel("중식");
+            }
+        });
+        BestRecipeButton3.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                // '한식' 버튼 클릭 시, 중앙 패널을 BestRecipe 패널로 변경
+                switchToBestRecipePanel("일식");
+            }
+        });
+        BestRecipeButton4.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                // '한식' 버튼 클릭 시, 중앙 패널을 BestRecipe 패널로 변경
+                switchToBestRecipePanel("양식");
+            }
+        });
         // 기존 중앙 패널을 제거하고 리뷰 패널로 변경
         remove(currentCenterPanel);
         currentCenterPanel = BestRecipePanel;
@@ -389,7 +419,42 @@ public class Main extends JFrame {
         revalidate();
         repaint();
     }
-    
+    private void switchToBestRecipePanel(String category) {
+        // ... (기존 코드는 그대로 두고 아래 부분만 수정)
+
+        // centerPanel의 table에서 카테고리가 '한식'이고 추천수가 가장 높은 행을 찾기
+        int bestRow = findBestRow(category);
+
+        // BestRecipeTableModel에 해당 행 추가
+        if (bestRow != -1) {
+            Object[] bestRowData = {
+                    tableModel.getValueAt(bestRow, 1), // 카테고리
+                    tableModel.getValueAt(bestRow, 0), // 레시피 번호
+                    tableModel.getValueAt(bestRow, 2), // 레시피 제목
+                    tableModel.getValueAt(bestRow, 4)  // 추천수
+            };
+            BestRecipeTableModel.addRow(bestRowData);
+        }
+
+        // 나머지 부분은 그대로 유지
+    }
+    private int findBestRow(String category) {
+        int bestRow = -1;
+        int maxRecommendation = -1;
+
+        for (int i = 0; i < tableModel.getRowCount(); i++) {
+            String tableCategory = (String) tableModel.getValueAt(i, 1);
+            int recommendation = (int) tableModel.getValueAt(i, 4);
+
+            // 해당 카테고리이면서 추천수가 현재까지의 최대 추천수보다 크면 업데이트
+            if (tableCategory.equals(category) && recommendation > maxRecommendation) {
+                maxRecommendation = recommendation;
+                bestRow = i;
+            }
+        }
+
+        return bestRow;
+    }
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
         	Main myGUI = new Main();
