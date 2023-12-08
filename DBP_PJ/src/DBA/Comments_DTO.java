@@ -39,12 +39,4 @@ public class Comments_DTO {
 	public void setCONTENT(String Content) {			this.CONTENT = Content;}
 	public void setID(String Id) {						this.ID = Id;}
 	
-	/*
-	댓글번호	NUMBER(3,0)
-	레시피번호	NUMBER(30,0)
-	작성시간	DATE
-	댓글내용	CHAR(50 BYTE)
-	작성자ID	VARCHAR2(30 BYTE)
-	*/
-	
 }

@@ -1,0 +1,67 @@
+--등급 테이블을 참고하여 사용자 테이블의 특정 사용자가 작성한 작성 수에 따른 등급을 입력한다.
+CREATE OR REPLACE PROCEDURE Insert_grade AS
+  W_Num NUMBER := 0;  -- 사용자의 총 작성 수 
+  user_id VARCHAR2(30); -- 사용자 ID
+  grade_name VARCHAR2(20); -- 등급 이름
+  need_W_Num NUMBER; -- 필요한 작성 수
+  
+ -- 커서 정의
+  CURSOR C IS SELECT 사용자ID, 총작성수 FROM 사용자; 
+  CURSOR G IS SELECT 등급이름, 필요작성수 FROM 등급;
+BEGIN
+-- 커서 열기
+   OPEN C;  
+ -- 데이터 인출 및 처리
+   LOOP 
+        FETCH  C INTO user_id, W_Num; -- 사용자 ID 기준 커서 LOOP
+        EXIT WHEN C % NOTFOUND;
+        -- 데이터가 없으면 LOOP 종료
+        OPEN G;
+        LOOP
+            FETCH G INTO grade_name, need_W_num; -- 사용자별 총작성수와 등급의 필요작성수 비교
+            EXIT WHEN G % NOTFOUND;
+            IF W_NUM > need_W_num THEN -- 사용자의 작성 수가 필요 작성수보다 크면 현재 등급 부여 후 반복문 지속 실행
+             BEGIN
+                UPDATE 사용자 SET 등급 = grade_name WHERE 사용자ID = user_id;
+                continue;
+             END;
+            ELSIF W_NUM = need_W_num THEN -- 사용자의 작성 수가 필요 작성수와 같으면 현재 등급 부여 후 종료
+             BEGIN
+                UPDATE 사용자 SET 등급 = grade_name WHERE 사용자ID = user_id;
+                EXIT;
+             END;
+             ELSE -- 사용자의 작성 수가 필요 작성수보다 작으면 바로 종료(사용자의 작성 수가 필요 작성수보다 컸을때의 등급으로 부여)
+                EXIT;
+            END IF;
+        END LOOP;
+        CLOSE G;
+   END LOOP;
+ -- 커서 닫기
+   CLOSE C; 
+END ;
+
+
+
+-- 테스트 --
+select * from 사용자;
+
+update 사용자 set 등급 = null ; -- 등급 null로 초기화
+update 사용자 set 총작성수 = 0; -- 총작성수 0으로 초기화
+
+-- 임의 총작성수 부여 (등급 부여 프로시저 테스트위함)
+update 사용자 set 총작성수 = 1 where 이름 ='이미선' ;
+update 사용자 set 총작성수 = 2 where 이름 ='배경자' ;
+update 사용자 set 총작성수 = 4 where 이름 ='하동환' ;
+update 사용자 set 총작성수 = 5 where 이름 ='유동주' ;
+update 사용자 set 총작성수 = 6 where 이름 ='윤유현' ;
+update 사용자 set 총작성수 = 9 where 이름 ='전승하' ;
+update 사용자 set 총작성수 = 10 where 이름 ='성문혁' ;
+update 사용자 set 총작성수 = 11 where 이름 ='봉승호' ;
+update 사용자 set 총작성수 = 14 where 이름 ='한광민' ;
+update 사용자 set 총작성수 = 15 where 이름 ='한지윤' ;
+update 사용자 set 총작성수 = 16 where 이름 ='전원경' ;
+update 사용자 set 총작성수 = 19 where 이름 ='표영자' ;
+update 사용자 set 총작성수 = 20 where 이름 ='성진호' ;
+update 사용자 set 총작성수 = 21 where 이름 ='이재용' ;
+
+EXECUTE INSERT_GRADE(); -- 프로시저 실행
