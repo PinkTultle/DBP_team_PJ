@@ -43,4 +43,8 @@ public class User_DTO {
 	public String getRATING() {return Rating;}
 	public int getWRITE_COUNT() {return Write_count;}
 	
+	public void print_dto() {
+		System.out.println("ID :" + ID + "\nName : " + Name);
+	}
+	
 }
