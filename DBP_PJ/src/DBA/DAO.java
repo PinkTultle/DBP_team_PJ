@@ -8,6 +8,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Vector;
+import oracle.jdbc.OracleTypes;
 
 public class DAO {
 	
@@ -337,14 +338,96 @@ public class DAO {
 	
 	//CallableStatement 구현--------------------------------------------------------
 	
+	//1. 사용자가 추천 레시피 버튼을 누르면 사용자의 등급을 입력값으로 받아 적절한 난이도의 레시피를 반환하는 
+	// 추천 레시피 프로시저를 호출한다. 
+	private void Recommend_recipe(String grade) {
+		
+		DB_Connect();
+		
+		rs = null;
+		sql = "{call 추천_레시피(?,?)}";
+		
+		try {
+			
+			callstmt = con.prepareCall(sql);
+			
+			callstmt.registerOutParameter(1,OracleTypes.CURSOR);
+			
+			callstmt.setString(2,grade);
+			callstmt.executeUpdate();
+			
+			rs = (ResultSet)callstmt.getObject(1);
+						
+			
+			while(rs.next()) {
+				System.out.printf("레시피번호: [%s] ",rs.getString("레시피번호"));
+				System.out.printf("제목: [%s] ",rs.getString("제목"));
+				System.out.printf("카테고리: [%s]\n ",rs.getString("카테고리"));
+			}
+			
+			End_of_use();
+		}catch(Exception e) {
+			
+		}	
+	}
 	
-	
+	 // 2. 사용자 탈퇴 시 사용자가 선택한 옵션을 입력값으로 받아 사용자가 작성했던 레시피와 리뷰, 댓글의 작성자를 
+	 // 임시계정으로 변경 혹은 삭제하는 탈퇴 프로시저를 호출한다.
+	private boolean User_Delete(String user_id, int option) {
+		
+		DB_Connect();
+		
+		sql = "{call 사용자_탈퇴(?,?)}";
+		
+		try {
+			callstmt = con.prepareCall(sql);
+			
+			callstmt.setString(1,user_id);
+			callstmt.setInt(2,option);
+						
+			ex_num = callstmt.executeUpdate();
+			
+			if(ex_num != 0) {
+				return true;
+			}
+			else throw(null);
+			
+		}catch(Exception e) {
+			return false;
+		}
+		finally {
+			End_of_use();
+		}	
+	}
 	
 	private void test() {
 		
 		//메소드 테스트 함수 실행시킬 함수를 안에 넣고 시작
+		DB_Connect();
 		
+		sql = "{call 사용자_탈퇴(?,?)}";
 		
+		try {
+			callstmt = con.prepareCall(sql);
+			
+			callstmt.setString(1,"vf5ZiKm");
+			callstmt.setInt(2,1);
+						
+			ex_num = callstmt.executeUpdate();
+			
+			if(ex_num != 0) {
+				System.out.println("적용완료");
+				
+			}
+			else {
+				System.out.println("해당하는 데이터가 없거나 적용실패");
+			}
+			callstmt.close(); // End_of_use() 사용 시 rs 사용 안하고 close() 하면 오류
+			con.close();
+		}catch(Exception e) {
+		}
+
+
 	}
 	
 	
