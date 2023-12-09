@@ -89,7 +89,7 @@ public class DAO {
 	//Statement 구현-------------------------------
 	
 	// 1. 사용자가 댓글 삭제 버튼 클릭하면 댓글 번호와 레시피 번호로 해당 댓글을 삭제한다.
-	private boolean Delete_comment(int recipe_num, int comment_num) {
+	public boolean Delete_comment(int recipe_num, int comment_num) {
 		
 		DB_Connect();
 		sql = "delete from 댓글 where 레시피번호 = "+ recipe_num + " and 댓글번호 = "+ comment_num;
@@ -115,7 +115,7 @@ public class DAO {
 	}
 
 	//   2. 리뷰 삭제 시, 리뷰 번호로 리뷰 테이블의 해당 리뷰를 삭제한다.
-	private boolean Delete_review(int recipe_num, int review_num) {
+	public boolean Delete_review(int recipe_num, int review_num) {
 		
 		DB_Connect();
 		sql = "delete from 댓글 where 레시피번호 = "+ recipe_num + " and 리뷰번호 = "+ review_num;
@@ -144,7 +144,7 @@ public class DAO {
 	
 	//INSERT
     //가. 회원가입 시 사용자의 정보를 입력받아 사용자 테이블에 추가한다.
-	private boolean Insert_user(User_DTO dto) {
+	public boolean Insert_user(User_DTO dto) {
 		
 		DB_Connect();
 		
@@ -179,7 +179,7 @@ public class DAO {
 	}
 	
     //나. 레시피 등록 시 사용자가 입력한 정보를 레시피 테이블에 추가한다. 
-	private boolean Insert_recipe(Recipe_DTO dto) {
+	public boolean Insert_recipe(Recipe_DTO dto) {
 		
 		DB_Connect();
 		
@@ -216,7 +216,7 @@ public class DAO {
 	}
 	
 	//다. 리뷰등록 시 사용자가 입력한 정보와 레시피 번호를 리뷰 테이블에 추가한다.
-	private boolean Insert_review(Review_DTO dto) {
+	public boolean Insert_review(Review_DTO dto) {
 		
 		DB_Connect();
 		
@@ -252,7 +252,7 @@ public class DAO {
 	}
 
 	//라. 댓글 등록 시 사용자가 입력한 정보와 레시피 번호를 댓글 테이블에 추가한다. 
-	private boolean Insert_comment(Comments_DTO dto) {
+	public boolean Insert_comment(Comments_DTO dto) {
 		
 		DB_Connect();
 		
@@ -287,7 +287,7 @@ public class DAO {
 	
 	//SELECT
 	//. 로그인 시 사용자의 ID와 비밀번호로 사용자 테이블에 사용자 존재 여부를 검색한다. 
-	private boolean Login_check(String id,String pw) {
+	public boolean Login_check(String id,String pw) {
 		DB_Connect();
 		
 		sql = "SELECT * from 사용자 where 사용자ID = ? and 비밀번호 = ?";
@@ -296,10 +296,10 @@ public class DAO {
 			pstmt = con.prepareStatement(sql);
 			pstmt.setString(1, id);
 			pstmt.setString(2, pw);
-			
 			//검색 결과가 있다 -> 해당 계정 및 비밀번호 존재
 			//true 반환 : 로그인 성공
-			if(pstmt.execute()) {
+			ResultSet result = pstmt.executeQuery();
+			if(result.isBeforeFirst()) {
 				return true;
 			}else throw(null);
 			
@@ -307,15 +307,17 @@ public class DAO {
 		//해당 id, pw일치 계정 없음!
 		//false 반환 : 로그인실패
 		catch(Exception e) {
+			
 			return false;
 		}finally {
 			//마지막에 연결 끊기 및 객체 초기화
+			
 			End_of_use();
 		}
 	}
 	
 	//나. 회원가입 시 사용자가 입력한 ID가 이미 존재하는 ID인지 검색한다.
-	private boolean overlap_check(String id) {
+	public boolean overlap_check(String id) {
 		DB_Connect();
 		
 		sql = "SELECT * from 사용자 where 사용자ID = '?';";
@@ -339,7 +341,7 @@ public class DAO {
 	}	
 	
 	//다. 사용자 프로필 조회 시 사용자 테이블에서 ID로 사용자 정보를 검색한다. 
-	private User_DTO Query_user_profile(String id) {
+	public User_DTO Query_user_profile(String id) {
 		
 		DB_Connect();
 		User_DTO dto = new User_DTO();
@@ -373,7 +375,7 @@ public class DAO {
 	}
 	
 	//라. 레시피 검색 시 카테고리로 해당 카테고리의 레시피를 검색한다.
-	private Vector<Recipe_DTO> Search_by_recipe_category(String category) {
+	public Vector<Recipe_DTO> Search_by_recipe_category(String category) {
 		
 		DB_Connect();
 		Vector<Recipe_DTO> list = new Vector<Recipe_DTO>();
@@ -418,7 +420,7 @@ public class DAO {
 	
 	
 	//마. 레시피 검색 시 레시피 이름으로 해당 이름의 레시피를 검색한다.
-	private Vector<Recipe_DTO> Search_by_recipe_title(String Title) {
+	public Vector<Recipe_DTO> Search_by_recipe_title(String Title) {
 		
 		DB_Connect();
 		Vector<Recipe_DTO> list = new Vector<Recipe_DTO>();
@@ -463,7 +465,7 @@ public class DAO {
 	}
 	
 	//바. 레시피 검색 시 카테고리와 레시피 이름으로 카테고리와 이름이 일치하는 레시피를 검색한다.
-	private Vector<Recipe_DTO> Search_by_recipe_cate_title(String category, String title) {
+	public Vector<Recipe_DTO> Search_by_recipe_cate_title(String category, String title) {
 		
 		DB_Connect();
 		Vector<Recipe_DTO> list = new Vector<Recipe_DTO>();
@@ -511,7 +513,7 @@ public class DAO {
 	}
 	
 	//사. 레시피 열람 시 레시피 번호로 해당 레시피를 검색하여 레시피 정보를 반환한다.
-	private Recipe_DTO Look_up_recipes(int recipe_num) {
+	public Recipe_DTO Look_up_recipes(int recipe_num) {
 		
 		DB_Connect();
 		Recipe_DTO dto = new Recipe_DTO();
@@ -548,7 +550,7 @@ public class DAO {
 	}
 	
 	//아. 레시피 열람 시 레시피 번호로 해당 레시피의 리뷰를 검색한다.
-	private Vector<Review_DTO> Search_for_reviews(int recipe_num) {
+	public Vector<Review_DTO> Search_for_reviews(int recipe_num) {
 		
 		DB_Connect();
 		Vector<Review_DTO> list = new Vector<Review_DTO>();
@@ -587,7 +589,7 @@ public class DAO {
 	}
 	
 	//자. 레시피 열람 시 레시피 번호로 해당 레시피의 댓글을 검색하여 반환한다.
-	private Vector<Comments_DTO> Search_for_comments(int recipe_num) {
+	public Vector<Comments_DTO> Search_for_comments(int recipe_num) {
 		
 		DB_Connect();
 		Vector<Comments_DTO> list = new Vector<Comments_DTO>();
@@ -626,7 +628,7 @@ public class DAO {
 	}
 	
 	//차. 리뷰검색 시 리뷰 이름으로 해당 이름의 리뷰를 검색한다.
-	private Vector<Review_DTO> Search_by_review_title(String Title) {
+	public Vector<Review_DTO> Search_by_review_title(String Title) {
 		
 		DB_Connect();
 		Vector<Review_DTO> list = new Vector<Review_DTO>();
@@ -667,7 +669,7 @@ public class DAO {
 	}
 	
 	//카. 리뷰 열람 시 리뷰번호와 레시피 번호로 해당 리뷰를 검색하여 데이터를 반환한다.
-	private Review_DTO Look_up_review(int review_num, int recipe_num) {
+	public Review_DTO Look_up_review(int review_num, int recipe_num) {
 		
 		DB_Connect();
 		Review_DTO dto = new Review_DTO();
@@ -703,7 +705,7 @@ public class DAO {
 	
 	//DELETE
 	//가. 레시피 삭제 시, 레시피 번호로 레시피 테이블에서 해당 레시피를 삭제한다.
-	private boolean Delete_recipe(int Recipe_num) {
+	public boolean Delete_recipe(int Recipe_num) {
 		
 		DB_Connect();
 		
