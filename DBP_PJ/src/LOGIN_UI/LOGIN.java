@@ -285,7 +285,7 @@ public class LOGIN extends JFrame {
 				}
 			}
 			if(e.getSource() == Join_bt) {
-				new JOIN_UI(login_UI);
+				new JOIN_UI();
 				setVisible(false);
 			}
 		}

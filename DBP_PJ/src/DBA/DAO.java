@@ -148,8 +148,8 @@ public class DAO {
 		
 		DB_Connect();
 		
-		sql = "INSERT INTO 사용자 (사용자ID, 이름, 이메일, 전화번호, 비밀번호, 총작성수, 등급),"
-				+ " VALUES (?, ?, ?, ?, ?, 0, null)";
+		sql = "INSERT INTO 사용자 (사용자ID, 이름, 이메일, 전화번호, 비밀번호, 총작성수, 등급)"
+				+ " VALUES (?, ?, ?, ?, ?, 0, '뉴비')";
 		try {
 			pstmt = con.prepareStatement(sql);
 			
@@ -306,8 +306,7 @@ public class DAO {
 		}
 		//해당 id, pw일치 계정 없음!
 		//false 반환 : 로그인실패
-		catch(Exception e) {
-			
+		catch(Exception e) {	
 			return false;
 		}finally {
 			//마지막에 연결 끊기 및 객체 초기화
@@ -320,14 +319,16 @@ public class DAO {
 	public boolean overlap_check(String id) {
 		DB_Connect();
 		
-		sql = "SELECT * from 사용자 where 사용자ID = '?';";
+		sql = "SELECT * from 사용자 where 사용자ID = ?";
 		
 		try {
 			pstmt = con.prepareStatement(sql);
 			pstmt.setString(1, id);
 			
+			ResultSet result = pstmt.executeQuery();
+			System.out.println(!result.isBeforeFirst());
 			//중복 아이디가 없을 경우 true반환
-			if(!pstmt.execute()) {
+			if(!result.isBeforeFirst()) {
 				return true;
 			}else throw(null);
 			

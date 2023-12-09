@@ -7,6 +7,7 @@ import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.Connection;
 
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
@@ -19,6 +20,14 @@ import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
 
 import LOGIN_UI.LOGIN.Login_pane;
+
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+import java.sql.Statement;
+
+import DBA.DAO.*;
+import LOGIN_UI.LOGIN.*;
 
 public class JOIN_UI extends JDialog {
 	
@@ -43,17 +52,34 @@ public class JOIN_UI extends JDialog {
 			
 	private int width = 60;
 	
+	String url = "jdbc:oracle:thin:@localhost:1521:XE";
+	String id = "RECIPE";
+	String pw = "1234";
+	private Connection con = null;
+	
+	private boolean overid = false; // 중복확인 했는지 여부
+	
+	private void DB_Connect() {
+		try {
+			con = DriverManager.getConnection(url, id, pw);	
+			System.out.println("데이터베이스 연결 성공");
+		}
+		catch(SQLException e) {
+			System.out.println("데이터베이스 연결 실패");
+			System.exit(0);
+		}
+	}
+	
 
 	public static void main(String[] args) {
-		new JOIN_UI(null);
+		new JOIN_UI();
 	}
 	
 	
 	
-	public JOIN_UI(JFrame login_UI) {
+	public JOIN_UI() {
 		
 		//로그인창 객체 저장
-		this.login_UI = login_UI;
 		
 		setTitle("회원가입");
 		c.setLayout(new BorderLayout());
@@ -217,13 +243,64 @@ public class JOIN_UI extends JDialog {
 	class BT_Listener implements ActionListener{
 
 		public void actionPerformed(ActionEvent e) {
-			
-			if(e.getSource() == id_bt) {
-				System.out.println("중복 실행");
+			String id2 = new String(id_tf.getText());
+			String pw2 = new String(pw_tf.getText());
+			String email2 = new String(email_tf.getText());
+			String name2 = new String(name_tf.getText());
+			String call2 = new String(call_tf.getText());
+			System.out.println(id2);
+			if(e.getSource() == id_bt) {	
+				if(id2.equals("입력하세요")||id2.equals("")) {
+					overid = false;
+					new yesno_popup("ID를 입력하세요!");
+				}
+				else {
+					DBA.DAO udao = new DBA.DAO();
+					if(udao.overlap_check(id2)) {
+						overid = true; // true 일때만 가입가능
+						new yesno_popup("사용가능합니다.");
+						
+					}
+					else if(!udao.overlap_check(id2)){
+						overid = false;
+						new yesno_popup("중복된 ID가 있습니다.");
+					}
+				}
 			}
 			
 			if(e.getSource() == join_bt){
-				System.out.println("가입 실행");
+				if(id2.equals("입력하세요")||id2.equals("")) {
+					new yesno_popup("ID를 입력하세요!");
+				}else {
+					if(pw2.equals("입력하세요")||pw2.equals("")) {
+						new yesno_popup("pw를 입력하세요!");
+					}else {
+						if(name2.equals("입력하세요")||name2.equals("")) {
+							new yesno_popup("이름을 입력하세요!");
+						}else {
+							if(call2.equals("입력하세요")||call2.equals("")) {
+								new yesno_popup("연락처를 입력하세요!");
+							}else {
+								if(email2.equals("입력하세요")||email2.equals("")) {
+									new yesno_popup("이메일을 입력하세요!");
+								}else {
+									if(!overid) {
+										new yesno_popup("ID 중복 체크를 진행해주세요.");
+									}else {
+										DBA.DAO udao2 = new DBA.DAO();
+										DBA.User_DTO udto = new DBA.User_DTO(id2, pw2, name2, email2, name2, call2, 0);
+										if(udao2.Insert_user(udto)) {
+											new yesno_popup("가입이 완료되었습니다.");
+											dispose();
+											new LOGIN();
+										}
+									} 
+								}
+							}
+						}
+					}
+				}
+				
 			}
 			
 			if(e.getSource() == close_bt) {
@@ -238,6 +315,50 @@ public class JOIN_UI extends JDialog {
 			
 		}	
 	}
+	
+	class yesno_popup extends JDialog {
+
+		public yesno_popup(String text) {
+
+			setSize(300, 150);
+			setTitle("확인");
+
+			// 사이즈 조절 off
+			setResizable(false);
+			// 화면 중앙에 출력
+			setLocationRelativeTo(null);
+
+			JPanel jp = (JPanel) getContentPane();
+			jp.setLayout(new BorderLayout(10, 10));
+			jp.setBackground(new Color(0xF7EFE5));
+			setContentPane(jp);
+
+			JLabel jl = new JLabel(text);
+			jl.setFont(new Font("맑은 고딕", Font.BOLD | Font.PLAIN, 25));
+
+			jl.setHorizontalAlignment(JLabel.CENTER);
+
+			JButton jb = new JButton("확인");
+			jb.setBorderPainted(false);
+			jb.setFocusPainted(false);
+			jb.setBackground(new Color(0x7743DB));
+			jb.setFont(new Font("맑은 고딕", Font.BOLD | Font.PLAIN, 22));
+			jb.setForeground(Color.white);
+
+			jb.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					dispose();
+				}
+			});
+
+			add(jb, BorderLayout.SOUTH);
+			add(jl, BorderLayout.CENTER);
+
+			setVisible(true);
+		}
+
+	}
+
 	
 	
 }
