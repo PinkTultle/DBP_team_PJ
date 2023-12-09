@@ -373,7 +373,7 @@ public class DAO {
 	
 	 // 2. 사용자 탈퇴 시 사용자가 선택한 옵션을 입력값으로 받아 사용자가 작성했던 레시피와 리뷰, 댓글의 작성자를 
 	 // 임시계정으로 변경 혹은 삭제하는 탈퇴 프로시저를 호출한다.
-	private boolean User_Delete(String user_id, int option) {
+	private void User_Delete(String user_id, int option) {
 		
 		DB_Connect();
 		
@@ -388,34 +388,6 @@ public class DAO {
 			ex_num = callstmt.executeUpdate();
 			
 			if(ex_num != 0) {
-				return true;
-			}
-			else throw(null);
-			
-		}catch(Exception e) {
-			return false;
-		}
-		finally {
-			End_of_use();
-		}	
-	}
-	
-	private void test() {
-		
-		//메소드 테스트 함수 실행시킬 함수를 안에 넣고 시작
-		DB_Connect();
-		
-		sql = "{call 사용자_탈퇴(?,?)}";
-		
-		try {
-			callstmt = con.prepareCall(sql);
-			
-			callstmt.setString(1,"vf5ZiKm");
-			callstmt.setInt(2,1);
-						
-			ex_num = callstmt.executeUpdate();
-			
-			if(ex_num != 0) {
 				System.out.println("적용완료");
 				
 			}
@@ -425,7 +397,13 @@ public class DAO {
 			callstmt.close(); // End_of_use() 사용 시 rs 사용 안하고 close() 하면 오류
 			con.close();
 		}catch(Exception e) {
-		}
+		}	
+	}
+	
+	private void test() {
+		
+		//메소드 테스트 함수 실행시킬 함수를 안에 넣고 시작
+		
 
 
 	}
