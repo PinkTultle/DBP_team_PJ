@@ -30,6 +30,7 @@ public class Review_DTO {
 	public int getREVIEW_NUMBER() {	return REVIEW_NUMBER;}
 	public int getRECIPE_NUMVER() { return RECIPE_NUMVER;}
 	public String getCONTENT() {	return CONTENT;}
+	public Date getDATE() {			return DATE;}
 	public int getGRADE() {			return GRADE;}
 	public String getID() { 		return ID;}
 

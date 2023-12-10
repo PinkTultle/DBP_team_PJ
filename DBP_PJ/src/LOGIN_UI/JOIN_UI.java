@@ -7,10 +7,14 @@ import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
+import java.sql.Connection;
 
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -20,17 +24,27 @@ import javax.swing.border.EmptyBorder;
 
 import LOGIN_UI.LOGIN.Login_pane;
 
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+import java.sql.Statement;
+
+import DBA.DAO.*;
+import LOGIN_UI.LOGIN.*;
+
 public class JOIN_UI extends JDialog {
 	
 	private JPanel c = (JPanel) getContentPane(),
 			Join_pane;
 	
 	private JLabel logo_l;
-	private Text id_l, pw_l, email_l, name_l, call_l;
+	private Text id_l, pw_l, email_l, name_l, call_l, golbang;
 	private input_feild id_tf, pw_tf, email_tf, name_tf, call_tf;
 	private Font font = new Font("맑은 고딕", Font.ROMAN_BASELINE + Font.PLAIN, 18);
 	private JButton id_bt, close_bt, join_bt;
 	private JFrame login_UI;
+	private JComboBox<String> email_host;
+	private String [] email_h = {"naver.com", "daum.net", "gmail.com", "hanmail.net", "nate.com", "yahoo.com"};
 	
 	private ImageIcon join_logo = new ImageIcon("./image/join_LOGO.png"),
 			close_img = new ImageIcon("./image/close.png"),
@@ -43,17 +57,16 @@ public class JOIN_UI extends JDialog {
 			
 	private int width = 60;
 	
-
+	private boolean overid = false; // 중복확인 했는지 여부
+	
+	/*
 	public static void main(String[] args) {
-		new JOIN_UI(null);
-	}
+		new JOIN_UI();
+	}*/
 	
-	
-	
-	public JOIN_UI(JFrame login_UI) {
+	public JOIN_UI() {
 		
 		//로그인창 객체 저장
-		this.login_UI = login_UI;
 		
 		setTitle("회원가입");
 		c.setLayout(new BorderLayout());
@@ -103,6 +116,15 @@ public class JOIN_UI extends JDialog {
 		email_tf = new input_feild("입력하세요", font);
 		email_tf.setSize(150, 30);
 		email_tf.setLocation(email_l.getX() + email_l.getWidth(), email_l.getY()+3);
+		
+		golbang = new Text("@", font);
+		golbang.setLocation(email_tf.getX()+email_tf.getWidth()+5, email_tf.getY());
+		golbang.setSize(20,30);
+		
+		email_host = new JComboBox<String>(email_h);
+		email_host.setLocation(golbang.getX()+golbang.getWidth()+5, email_tf.getY());
+		email_host.setSize(150, 30);
+		//email_host.setBackground(new Color(0xfef9d7));
 		
 		//버튼 리스너
 		BT_Listener lis = new BT_Listener();
@@ -160,6 +182,10 @@ public class JOIN_UI extends JDialog {
 		Join_pane.add(name_tf);
 		Join_pane.add(call_tf);
 		Join_pane.add(email_tf);
+		Join_pane.add(email_host);
+		
+		Join_pane.add(golbang);
+		
 		
 		c.setFocusable(true);
 		c.requestFocus();
@@ -200,9 +226,13 @@ public class JOIN_UI extends JDialog {
 	
 	class input_feild extends JTextField{
 		
+		private String init_str;
+		
 		public input_feild(String text, Font font) {
 			
-			setText(text);
+			this.init_str = text;
+			
+			setText(init_str);
 			setFont(font);
 			setSize( 300, 30);
 			
@@ -210,6 +240,26 @@ public class JOIN_UI extends JDialog {
 			setHorizontalAlignment(JTextField.CENTER);
 			setOpaque(false);
 			setBorder(null);
+			addFocusListener(new focue_event());			
+		}
+		
+		class focue_event implements FocusListener{
+
+			@Override
+			public void focusGained(FocusEvent e) {
+				JTextField me = (JTextField) e.getSource();
+				me.setText("");
+			}
+			
+
+			@Override
+			public void focusLost(FocusEvent e) {
+				JTextField me = (JTextField) e.getSource();
+				
+				if(me.getText().equals(init_str) || me.getText().equals(""))		
+					me.setText(init_str);
+			}
+			
 			
 		}
 	}
@@ -217,27 +267,122 @@ public class JOIN_UI extends JDialog {
 	class BT_Listener implements ActionListener{
 
 		public void actionPerformed(ActionEvent e) {
-			
-			if(e.getSource() == id_bt) {
-				System.out.println("중복 실행");
+			String id2 = new String(id_tf.getText());
+			String pw2 = new String(pw_tf.getText());
+			String email2 = new String(email_tf.getText());
+			String name2 = new String(name_tf.getText());
+			String call2 = new String(call_tf.getText());
+			if(e.getSource() == id_bt) {	
+				if(id2.equals("입력하세요")||id2.equals("")) {
+					overid = false;
+					new yesno_popup("ID를 입력하세요!");
+				}
+				else {
+					DBA.DAO udao = new DBA.DAO();
+					if(udao.overlap_check(id2)) {
+						overid = true; // true 일때만 가입가능
+						id_tf.setFocusable(false);
+						id_tf.setEditable(false);
+						new yesno_popup("사용가능합니다.");
+						
+					}
+					else if(!udao.overlap_check(id2)){
+						overid = false;
+						new yesno_popup("중복된 ID가 있습니다.");
+					}
+				}
 			}
 			
 			if(e.getSource() == join_bt){
-				System.out.println("가입 실행");
+				if(id2.equals("입력하세요")||id2.equals("")) {
+					new yesno_popup("ID를 입력하세요!");
+				}else {
+					if(pw2.equals("입력하세요")||pw2.equals("")) {
+						new yesno_popup("pw를 입력하세요!");
+					}else {
+						if(name2.equals("입력하세요")||name2.equals("")) {
+							new yesno_popup("이름을 입력하세요!");
+						}else {
+							if(call2.equals("입력하세요")||call2.equals("")) {
+								new yesno_popup("연락처를 입력하세요!");
+							}else {
+								if(email2.equals("입력하세요")||email2.equals("")) {
+									new yesno_popup("이메일을 입력하세요!");
+								}else {
+									if(!overid) {
+										new yesno_popup("ID 중복 체크를 진행해주세요.");
+									}else {
+										DBA.DAO udao2 = new DBA.DAO();
+										email2 += '@'+email_host.getSelectedItem().toString();
+										DBA.User_DTO udto = new DBA.User_DTO(id2, pw2, name2, email2, name2, call2, 0);
+										if(udao2.Insert_user(udto)) {
+											dispose();
+											new LOGIN();
+											new yesno_popup("가입이 완료되었습니다.");
+										}
+									} 
+								}
+							}
+						}
+					}
+				}
+				
 			}
 			
 			if(e.getSource() == close_bt) {
 				dispose();
+				login_UI.setVisible(true);
 
-				if(login_UI != null)
-					login_UI.setVisible(true);
-				else
-					new LOGIN();
 			}
 			
 			
 		}	
 	}
+	
+	class yesno_popup extends JDialog {
+
+		public yesno_popup(String text) {
+			setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+			
+			setSize(300, 150);
+			setTitle("확인");
+
+			// 사이즈 조절 off
+			setResizable(false);
+			// 화면 중앙에 출력
+			setLocationRelativeTo(null);
+
+			JPanel jp = (JPanel) getContentPane();
+			jp.setLayout(new BorderLayout(10, 10));
+			jp.setBackground(new Color(0xF7EFE5));
+			setContentPane(jp);
+
+			JLabel jl = new JLabel(text);
+			jl.setFont(new Font("맑은 고딕", Font.BOLD | Font.PLAIN, 25));
+
+			jl.setHorizontalAlignment(JLabel.CENTER);
+
+			JButton jb = new JButton("확인");
+			jb.setBorderPainted(false);
+			jb.setFocusPainted(false);
+			jb.setBackground(new Color(0x7743DB));
+			jb.setFont(new Font("맑은 고딕", Font.BOLD | Font.PLAIN, 22));
+			jb.setForeground(Color.white);
+
+			jb.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					dispose();
+				}
+			});
+
+			add(jb, BorderLayout.SOUTH);
+			add(jl, BorderLayout.CENTER);
+
+			setVisible(true);
+		}
+
+	}
+
 	
 	
 }
