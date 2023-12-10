@@ -101,17 +101,25 @@ public class DAO {
 			
 			//성공시 true 반환
 			if(ex_num == 1) {
+				stmt.close();
+				con.close();
 				return true;
-			}else throw(null); 
+			}else {
+				stmt.close();
+				con.close();
+				throw(null); 
+			}
 			
 		}
 		//실패시 에러 발생 false 반환
 		catch(Exception e) {
+			
 			return false;
 		}
 		finally {
 			//마지막에 연결 끊기 및 객체 초기화
-			End_of_use();
+			//End_of_use(); // pstmt 없는데 close 해서 오류
+			
 		}		
 	}
 
