@@ -339,7 +339,7 @@ public class JOIN_UI extends JDialog {
 		}	
 	}
 	
-	class yesno_popup extends JDialog {
+	public class yesno_popup extends JDialog {
 
 		public yesno_popup(String text) {
 			setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);

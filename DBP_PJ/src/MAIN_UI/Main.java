@@ -47,7 +47,7 @@ public class Main extends JFrame {
         topPanel.setBackground(new Color(0xF7EFE5)); 
 
         // 중앙 패널 생성
-        JLabel userIdLabel = new JLabel("사용자 아이디");
+        JLabel userIdLabel = new JLabel(User_id);
         userIdLabel.setForeground(Color.BLACK); 
 
         // 클릭 가능한 이미지 추가
@@ -58,7 +58,7 @@ public class Main extends JFrame {
             @Override
             public void mouseClicked(MouseEvent e) {
             	 SwingUtilities.invokeLater(() -> {
-                     User_Profile userProfile = new User_Profile(mainframe);
+                     User_Profile userProfile = new User_Profile(mainframe, User_id);
                      userProfile.setVisible(true);
                  });
              }
