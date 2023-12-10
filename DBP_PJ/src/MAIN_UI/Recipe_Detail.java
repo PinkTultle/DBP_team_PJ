@@ -15,6 +15,7 @@ import java.sql.Statement;
 import java.util.Vector;
 
 import DBA.*;
+import MAIN_UI.*;
 
 public class Recipe_Detail extends JFrame {
 
@@ -46,6 +47,8 @@ public class Recipe_Detail extends JFrame {
 	// 나가기 버튼
 	private JButton exitButton = new JButton("나가기");
 	
+	private JButton ComrmButton = new JButton("댓글 삭제");
+	
 	private JPanel rdPanel = new JPanel();
 	
 	static private int recipe_num = 1;
@@ -74,7 +77,6 @@ public class Recipe_Detail extends JFrame {
     public Recipe_Detail(int recipe_num1) {
     	
     	recipe_num = recipe_num1;
-    	System.out.println(recipe_num);
     	
     	DBA.Recipe_DTO rdto = new DBA.Recipe_DTO();
     	DBA.DAO rdao = new DBA.DAO();
@@ -219,7 +221,7 @@ public class Recipe_Detail extends JFrame {
 		
 		String[] commentstr = new String[10];
 		for(int index = 0; index < cdto.size(); index ++) {
-			commentstr[index] = cdto.elementAt(index).getCONTENT();
+			commentstr[index] = (index+1)+ " " +cdto.elementAt(index).getCONTENT();
 		}
 		
 		commentList = new JList(commentstr);
@@ -244,12 +246,84 @@ public class Recipe_Detail extends JFrame {
 		exitButton.setLocation(600, 600);
 		rdPanel.add(exitButton);
 		this.add(rdPanel);
+		
+		// 댓글 삭제 버튼 이벤트
+		ComrmButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				
+				Vector<Comments_DTO> cdto = new Vector<Comments_DTO>();
+				DBA.DAO cdao = new DBA.DAO();
+		    	cdto = cdao.Search_for_comments(recipe_num1);
+				String cid = cdto.elementAt(commentList.getSelectedIndex()).getID();
+				int cnum = cdto.elementAt(commentList.getSelectedIndex()).getCOMMENT_NUMBER();
+				System.out.println(MAIN_UI.Main.cid);
+				System.out.println(cnum);
+				 
+				if(cid.contains(MAIN_UI.Main.cid)){ // 불러오는 값이 공백값이 섞여있어서 == 가 아닌 contains로 해당 문자열이 존재하는지로 비교
+					DBA.DAO crmdao = new DBA.DAO();
+					crmdao.Delete_comment(recipe_num1, cnum);
+					dispose();
+					MAIN_UI.Recipe_Detail recipeDetail = new MAIN_UI.Recipe_Detail(recipe_num);
+					recipeDetail.setVisible(true);
+				}else {
+					new fail_popup("작성하신 댓글이 아닙니다");
+				}
+			}
+		});
+		
+		// 나가기 버튼
+		ComrmButton.setSize(100, 40);
+		ComrmButton.setLocation(450, 680);
+		rdPanel.add(ComrmButton);
+		this.add(rdPanel);
         
 		
 		// 프레임을 표시
         setVisible(true);
     }
     
+    class fail_popup extends JDialog {
+
+    	public fail_popup(String text) {
+
+    		setSize(500, 150);
+    		setTitle("실패");
+
+    		// 사이즈 조절 off
+    		setResizable(false);
+    		// 화면 중앙에 출력
+    		setLocationRelativeTo(null);
+
+    		JPanel jp = (JPanel) getContentPane();
+    		jp.setLayout(new BorderLayout(10, 10));
+    		jp.setBackground(new Color(0xF7EFE5));
+    		setContentPane(jp);
+
+    		JLabel jl = new JLabel(text);
+    		jl.setFont(new Font("맑은 고딕", Font.BOLD | Font.PLAIN, 25));
+
+    		jl.setHorizontalAlignment(JLabel.CENTER);
+
+    		JButton jb = new JButton("확인");
+    		jb.setBorderPainted(false);
+    		jb.setFocusPainted(false);
+    		jb.setBackground(new Color(0x7743DB));
+    		jb.setFont(new Font("맑은 고딕", Font.BOLD | Font.PLAIN, 22));
+    		jb.setForeground(Color.white);
+
+    		jb.addActionListener(new ActionListener() {
+    			public void actionPerformed(ActionEvent e) {
+    				dispose();
+    			}
+    		});
+
+    		add(jb, BorderLayout.SOUTH);
+    		add(jl, BorderLayout.CENTER);
+
+    		setVisible(true);
+    	}
+    }
+   
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> new Recipe_Detail(recipe_num));
     }

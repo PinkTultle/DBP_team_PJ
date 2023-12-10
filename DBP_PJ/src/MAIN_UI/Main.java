@@ -31,6 +31,7 @@ public class Main extends JFrame {
 	
 	private int recipe_num = 1;
 	
+	static public String cid ;
 	
 	private void DB_Connect() {
 		try {
@@ -44,7 +45,7 @@ public class Main extends JFrame {
 	}
 
     public Main(String id) {
-    	
+    	cid = id;
     	try {
 			Class.forName("oracle.jdbc.driver.OracleDriver");
 			System.out.println("드라이브 적재 성공");
