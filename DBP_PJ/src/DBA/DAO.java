@@ -890,10 +890,7 @@ public class DAO {
 			else {
 				con.rollback();
 			}
-			
-			
 			con.setAutoCommit(true);
-			
 			
 		}catch(Exception e) {
 		}
