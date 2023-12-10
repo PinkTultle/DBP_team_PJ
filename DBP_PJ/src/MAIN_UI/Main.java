@@ -94,7 +94,6 @@ public class Main extends JFrame {
         // topPanel에 왼쪽 버튼 패널 추가
         topPanel.add(leftButtonPanel, BorderLayout.EAST);
         
-        // 중앙 패널 생성
         JPanel centerPanel = new JPanel();
         centerPanel.setLayout(new BorderLayout());
         centerPanel.setBackground(Color.WHITE); // 배경색을 원하는 색으로 변경할 수 있습니다.
@@ -462,53 +461,96 @@ public class Main extends JFrame {
         });
     }
     
-    class Recommended_recipe implements ActionListener {
-
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            // DAO 객체 생성
-            DAO dao = new DAO();
-
-            // 사용자 정보 조회
-            User_DTO user = dao.Query_user_profile(User_id);
-
-            // 새로운 데이터로 테이블 모델 업데이트
-            Vector<Recipe_DTO> list = dao.Recommend_recipe(user.getRATING());
-
-            // 기존 테이블 모델 초기화
-            tableModel.setRowCount(0);
-
-            // 수정된 부분: list가 null 또는 비어 있는 경우 처리
-            if (list != null && !list.isEmpty()) {
-                // 새로운 데이터로 테이블 모델 채우기
-                for (Recipe_DTO item : list) {
-                    Object[] rowData = {Integer.toString(item.getRECIPE_NUMBER()),
-                            item.getCATEGORY(),
-                            item.getTITLE(),
-                            item.getDESCRIPTION(),
-                            Integer.toString(item.getRECOMMEND_COUNT()),
-                            Integer.toString(item.getLEVEL())};
-
-                    tableModel.addRow(rowData);
+    class Recommended_recipe implements ActionListener{
+    	
+    	@Override
+    	public void actionPerformed(ActionEvent e) {
+    		
+    		DAO dao = new DAO();
+    		
+    		User_DTO user = dao.Query_user_profile(User_id);
+    		    		
+    	     // 테이블 모델 생성
+            tableModel = new DefaultTableModel() {
+                @Override
+                public boolean isCellEditable(int row, int column) {
+                    return false; // 모든 셀을 편집 불가능하도록 설정
                 }
+            };
+            
+            tableModel.addColumn("NO.");
+            tableModel.addColumn("카테고리");
+            tableModel.addColumn("제목");
+            tableModel.addColumn("레시피 내용");
+            tableModel.addColumn("추천수");
+            tableModel.addColumn("난이도");
+            
+            DefaultTableCellRenderer ren = new DefaultTableCellRenderer();
+            ren.setHorizontalAlignment(SwingConstants.CENTER);
 
-                // 테이블에 변경된 모델 적용
-                table.setModel(tableModel);
+            
+            // 테이블 생성
+            table = new JTable(tableModel);
+            table.addMouseListener(new MouseAdapter() {
+                @Override
+                public void mouseClicked(MouseEvent e) {
+                    if (e.getClickCount() == 2) { // 더블클릭 이벤트
+                        int selectedRow = table.getSelectedRow();
+                        if (selectedRow != -1) {
+                            // Recipe_Detail.java에 정보 전달
+                            SwingUtilities.invokeLater(() -> {
+                                Recipe_Detail recipeDetail = new Recipe_Detail();
+                                recipeDetail.setVisible(true);
+                            });
+                        }
+                    }
+                }
+            });
+            
+            //각 컬럼 길이 변경
+            table.getColumn("NO.").setPreferredWidth(8);
+            table.getColumn("카테고리").setPreferredWidth(10);
+            table.getColumn("제목").setPreferredWidth(60);
+            table.getColumn("레시피 내용").setPreferredWidth(100);
+            table.getColumn("추천수").setPreferredWidth(1);
+            table.getColumn("난이도").setPreferredWidth(1);
+            
+            TableColumnModel tm = table.getColumnModel();
+            
+        	tm.getColumn(0).setCellRenderer(ren);  
+        	tm.getColumn(1).setCellRenderer(ren);  
+        	tm.getColumn(4).setCellRenderer(ren);  
+        	tm.getColumn(5).setCellRenderer(ren);  
 
-                // 테이블 다시 그리기
-                table.repaint();
-
-                // 스크롤 패널에 테이블 추가
-                scrollPane.setViewportView(table); // 기존의 스크롤 패널에 테이블을 바로 설정
-            } else {
-                // 수정된 부분: 추천 레시피가 없을 때의 처리
-                JOptionPane.showMessageDialog(null, "추천 레시피가 없습니다.", "알림", JOptionPane.INFORMATION_MESSAGE);
-            }
-
-            // 패널을 다시 그리기
+         
+    		Vector<Recipe_DTO> list = dao.Recommend_recipe(user.getRATING());
+        	
+        	for(Recipe_DTO item : list) {
+        		Object[] rowData = {Integer.toString(item.getRECIPE_NUMBER()), 
+        							item.getCATEGORY(),
+        							item.getTITLE(),
+        							item.getDESCRIPTION(),
+        							Integer.toString(item.getRECOMMEND_COUNT()),
+        							Integer.toString(item.getLEVEL())};
+        		
+        		tableModel.addRow(rowData);
+        	}
+        	
+                
+                
+            // 스크롤 패널에 테이블 추가
+            scrollPane = new JScrollPane(table);
+            
             revalidate();
             repaint();
-        }
+    		
+    	}
     }
+
+    
     
 }
+
+
+
+

@@ -6,15 +6,6 @@
 			<attribute name="module" value="true"/>
 		</attributes>
 	</classpathentry>
-<<<<<<< HEAD
 	<classpathentry kind="lib" path="C:/Users/user/OneDrive/base folder/대학/4학년 2학기/데이터베이스 프로그래밍/팀 프로젝트/Program/DBP_PJ/ojdbc8.jar"/>
-=======
-	<classpathentry kind="src" path="src"/>
-	<classpathentry kind="lib" path="C:/Users/user/OneDrive/base folder/대학/4학년 2학기/데이터베이스 프로그래밍/팀 프로젝트/Program/DBP_PJ/ojdbc8.jar">
-		<attributes>
-			<attribute name="module" value="true"/>
-		</attributes>
-	</classpathentry>
->>>>>>> 4c43cd454acf5649565dec9ae123b3f6708ed7d7
 	<classpathentry kind="output" path="bin"/>
 </classpath>

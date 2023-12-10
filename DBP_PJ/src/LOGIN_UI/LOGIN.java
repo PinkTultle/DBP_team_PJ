@@ -66,7 +66,7 @@ public class LOGIN extends JFrame {
 	//GUI 설정
 	public LOGIN() {
 		
-		login_UI = this;
+		
 		//배경 패널 설정
 		c.setLayout(new BorderLayout());
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -312,3 +312,5 @@ class fail_popup extends JDialog {
 	}
 
 }
+
+
