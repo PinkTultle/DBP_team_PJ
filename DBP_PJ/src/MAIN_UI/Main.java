@@ -4,69 +4,48 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.Vector;
+
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableColumnModel;
 import javax.swing.border.EmptyBorder;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import javax.swing.RowFilter;
+
 import javax.swing.table.TableRowSorter;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
-import java.sql.Statement;
-
-import DBA.*;
-import MAIN_UI.*;
+import DBA.DAO;
+import DBA.Recipe_DTO;
+import DBA.User_DTO;
 
 public class Main extends JFrame {
 	private JPanel currentCenterPanel;
 	private JTextField searchTextField;
 	private TableRowSorter<DefaultTableModel> sorter;
+	private DefaultTableModel tableModel;
+	private JTable table;
+	private JScrollPane scrollPane;
+	private String User_id;
+	private JPanel centerPanel;
+	private JFrame Main;
 	
-	String url = "jdbc:oracle:thin:@localhost:1521:XE";
-	String id = "RECIPE";
-	String pw = "1234";
-	private Connection con = null;
-	
-	private int recipe_num = 1;
-	
-	static public String cid ;
-	
-	private void DB_Connect() {
-		try {
-			con = DriverManager.getConnection(url, id, pw);	
-			System.out.println("데이터베이스 연결 성공");
-		}
-		catch(SQLException e) {
-			System.out.println("데이터베이스 연결 실패");
-			System.exit(0);
-		}
-	}
 
     public Main(String id) {
-    	cid = id;
-    	try {
-			Class.forName("oracle.jdbc.driver.OracleDriver");
-			System.out.println("드라이브 적재 성공");
-
-		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
-			System.out.println("드라이버를 찾을 수 없습니다.");
-		}
     	
+    	Main = this;
         // 프레임 설정
         setTitle("MAIN");
         setSize(800, 500);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
+        User_id = id;
 
         // 상단 패널 생성
         JPanel topPanel = new JPanel();
         topPanel.setPreferredSize(new Dimension(800, 100));
         topPanel.setBackground(new Color(0xF7EFE5)); 
-
-        // 중앙 패널 생성
+        // 사용자 아이디 라벨 생성
         JLabel userIdLabel = new JLabel("사용자 아이디");
         userIdLabel.setForeground(Color.BLACK); 
 
@@ -78,7 +57,7 @@ public class Main extends JFrame {
             @Override
             public void mouseClicked(MouseEvent e) {
             	 SwingUtilities.invokeLater(() -> {
-                     User_Profile userProfile = new User_Profile();
+                     User_Profile userProfile = new User_Profile(Main, User_id);
                      userProfile.setVisible(true);
                  });
              }
@@ -114,54 +93,82 @@ public class Main extends JFrame {
         // topPanel에 왼쪽 버튼 패널 추가
         topPanel.add(leftButtonPanel, BorderLayout.EAST);
         
+        // 중앙 패널 생성
         JPanel centerPanel = new JPanel();
         centerPanel.setLayout(new BorderLayout());
         centerPanel.setBackground(Color.WHITE); // 배경색을 원하는 색으로 변경할 수 있습니다.
 
         // 테이블 모델 생성
-        DefaultTableModel tableModel = new DefaultTableModel() {
+        tableModel = new DefaultTableModel() {
             @Override
             public boolean isCellEditable(int row, int column) {
                 return false; // 모든 셀을 편집 불가능하도록 설정
             }
         };
-        tableModel.addColumn("레시피 번호");
+        tableModel.addColumn("NO.");
         tableModel.addColumn("카테고리");
         tableModel.addColumn("제목");
         tableModel.addColumn("레시피 내용");
         tableModel.addColumn("추천수");
-       
+        tableModel.addColumn("난이도");
+        
+        DefaultTableCellRenderer ren = new DefaultTableCellRenderer();
+        ren.setHorizontalAlignment(SwingConstants.CENTER);
 
+        
         // 테이블 생성
-        JTable table = new JTable(tableModel);
+        table = new JTable(tableModel);
         table.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
                 if (e.getClickCount() == 2) { // 더블클릭 이벤트
                     int selectedRow = table.getSelectedRow();
                     if (selectedRow != -1) {
-                    	int col = table.getSelectedColumn();
-                    	recipe_num = (int)table.getValueAt(selectedRow, col);
-                    	System.out.println(recipe_num);
                         // Recipe_Detail.java에 정보 전달
-                       // SwingUtilities.invokeLater(() -> {
-                        	 MAIN_UI.Recipe_Detail recipeDetail = new MAIN_UI.Recipe_Detail(recipe_num);
-                        	// Recipe_Detail recipeDetail = new Recipe_Detail(36);
+                        SwingUtilities.invokeLater(() -> {
+                            Recipe_Detail recipeDetail = new Recipe_Detail();
                             recipeDetail.setVisible(true);
-                      //  });
+                        });
                     }
-          
                 }
-                
             }
-            
         });
-        for (int i = 0; i < 40; i++) {
-            Object[] rowData = {i + 1, "?식", "제목 " + (i + 1), "레시피 내용 " + (i + 1), (int) (Math.random() * 100)};
-            tableModel.addRow(rowData);
-        }
+        
+        //각 컬럼 길이 변경
+        table.getColumn("NO.").setPreferredWidth(8);
+        table.getColumn("카테고리").setPreferredWidth(10);
+        table.getColumn("제목").setPreferredWidth(60);
+        table.getColumn("레시피 내용").setPreferredWidth(100);
+        table.getColumn("추천수").setPreferredWidth(1);
+        table.getColumn("난이도").setPreferredWidth(1);
+        
+        TableColumnModel tm = table.getColumnModel();
+        
+    	tm.getColumn(0).setCellRenderer(ren);  
+    	tm.getColumn(1).setCellRenderer(ren);  
+    	tm.getColumn(4).setCellRenderer(ren);  
+    	tm.getColumn(5).setCellRenderer(ren);  
+
+     
+    	//TODO 레시피 테이블 들어갈 부분
+    	DAO dao = new DAO();
+    	Vector<Recipe_DTO> list = dao.Search_by_recipe(); 
+    	
+    	for(Recipe_DTO item : list) {
+    		Object[] rowData = {Integer.toString(item.getRECIPE_NUMBER()), 
+    							item.getCATEGORY(),
+    							item.getTITLE(),
+    							item.getDESCRIPTION(),
+    							Integer.toString(item.getRECOMMEND_COUNT()),
+    							Integer.toString(item.getLEVEL())};
+    		
+    		tableModel.addRow(rowData);
+    	}
+    	
+            
+            
         // 스크롤 패널에 테이블 추가
-        JScrollPane scrollPane = new JScrollPane(table);
+        scrollPane = new JScrollPane(table);
         scrollPane.setBorder(new EmptyBorder(20, 20, 20, 20));
         scrollPane.setPreferredSize(new Dimension(500, 500));
         centerPanel.add(scrollPane, BorderLayout.WEST);
@@ -179,21 +186,24 @@ public class Main extends JFrame {
         centerPanel.add(searchPanel);
         // 버튼을 담을 패널 생성
         JPanel buttonPanel = new JPanel();
-        buttonPanel.setLayout(new GridLayout(3, 1, 5, 10));
+        buttonPanel.setLayout(new GridLayout(4, 1, 5, 10));
         buttonPanel.setBorder(new EmptyBorder(200, 10, 50, 50)); // 하단과 오른쪽의 여백 조절
         JButton button1 = new JButton("등록");
         JButton button2 = new JButton("삭제");
-        JButton button3 = new JButton("추천");
+        JButton button3 = new JButton("레시피 추천");
+        JButton button4 = new JButton("추천 레시피");
 
         // 버튼 크기 조절
         Dimension buttonSize = new Dimension(150, 50);
         button1.setPreferredSize(buttonSize);
         button2.setPreferredSize(buttonSize);
         button3.setPreferredSize(buttonSize);
+        button4.setPreferredSize(buttonSize);
 
         buttonPanel.add(button1);
         buttonPanel.add(button2);
         buttonPanel.add(button3);
+        buttonPanel.add(button4);
         centerPanel.add(buttonPanel, BorderLayout.EAST);
         buttonPanel.setBackground(Color.WHITE);
         
@@ -212,16 +222,24 @@ public class Main extends JFrame {
         button3.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                int selectedRow = table.getSelectedRow();
+                int selectedRow = (int)table.getSelectedRow();
                 if (selectedRow != -1) {
                     // 선택된 행의 추천수 증가
-                    int currentRecommendation = (int) tableModel.getValueAt(selectedRow, 4);
-                    tableModel.setValueAt(currentRecommendation + 1, selectedRow, 4);
+                    String currentRecommendation = (String) tableModel.getValueAt(selectedRow, 4);
+                    int num = Integer.parseInt(currentRecommendation);
+                    num++; 
+                    tableModel.setValueAt(Integer.toString(num), selectedRow, 4);
+                    
                 } else {
                     JOptionPane.showMessageDialog(null, "추천할 행을 선택하세요.", "알림", JOptionPane.WARNING_MESSAGE);
                 }
             }
         });
+        
+        button4.addActionListener(new Recommended_recipe());
+        
+        
+        
         // 레이아웃 설정
         setLayout(new BorderLayout());
         add(topPanel, BorderLayout.NORTH);
@@ -282,14 +300,11 @@ public class Main extends JFrame {
                 if (e.getClickCount() == 2) { // 더블클릭 이벤트
                     int selectedRow = reviewTable.getSelectedRow();
                     if (selectedRow != -1) {
-                    	int col = reviewTable.getSelectedColumn();
-                    	recipe_num = (int)reviewTable.getValueAt(selectedRow, col);
-                    	System.out.println(recipe_num);
                         // Recipe_Detail.java에 정보 전달
-                        //SwingUtilities.invokeLater(() -> {
-                        	MAIN_UI.Recipe_Detail recipeDetail = new MAIN_UI.Recipe_Detail(recipe_num);
+                        SwingUtilities.invokeLater(() -> {
+                            Recipe_Detail recipeDetail = new Recipe_Detail();
                             recipeDetail.setVisible(true);
-                        //});
+                        });
                     }
                 }
             }
@@ -380,14 +395,11 @@ public class Main extends JFrame {
                 if (e.getClickCount() == 2) { // 더블클릭 이벤트
                     int selectedRow = BestRecipeTable.getSelectedRow();
                     if (selectedRow != -1) {
-                    	int col = BestRecipeTable.getSelectedColumn();
-                    	recipe_num = (int)BestRecipeTable.getValueAt(selectedRow, col);
-                    	System.out.println(recipe_num);
                         // Recipe_Detail.java에 정보 전달
-                        //SwingUtilities.invokeLater(() -> {
-                        MAIN_UI.Recipe_Detail recipeDetail = new MAIN_UI.Recipe_Detail(recipe_num);
-                        recipeDetail.setVisible(true);
-                        //});
+                        SwingUtilities.invokeLater(() -> {
+                            Recipe_Detail recipeDetail = new Recipe_Detail();
+                            recipeDetail.setVisible(true);
+                        });
                     }
                 }
             }
@@ -441,10 +453,61 @@ public class Main extends JFrame {
         repaint();
     }
     
-    /*public static void main(String[] args) {
+    
+    public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
-        	Main myGUI = new Main();
+        	Main myGUI = new Main(null);
             myGUI.setVisible(true);
         });
-    }*/
+    }
+    
+    class Recommended_recipe implements ActionListener {
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            // DAO 객체 생성
+            DAO dao = new DAO();
+
+            // 사용자 정보 조회
+            User_DTO user = dao.Query_user_profile(User_id);
+
+            // 새로운 데이터로 테이블 모델 업데이트
+            Vector<Recipe_DTO> list = dao.Recommend_recipe(user.getRATING());
+
+            // 기존 테이블 모델 초기화
+            tableModel.setRowCount(0);
+
+            // 수정된 부분: list가 null 또는 비어 있는 경우 처리
+            if (list != null && !list.isEmpty()) {
+                // 새로운 데이터로 테이블 모델 채우기
+                for (Recipe_DTO item : list) {
+                    Object[] rowData = {Integer.toString(item.getRECIPE_NUMBER()),
+                            item.getCATEGORY(),
+                            item.getTITLE(),
+                            item.getDESCRIPTION(),
+                            Integer.toString(item.getRECOMMEND_COUNT()),
+                            Integer.toString(item.getLEVEL())};
+
+                    tableModel.addRow(rowData);
+                }
+
+                // 테이블에 변경된 모델 적용
+                table.setModel(tableModel);
+
+                // 테이블 다시 그리기
+                table.repaint();
+
+                // 스크롤 패널에 테이블 추가
+                scrollPane.setViewportView(table); // 기존의 스크롤 패널에 테이블을 바로 설정
+            } else {
+                // 수정된 부분: 추천 레시피가 없을 때의 처리
+                JOptionPane.showMessageDialog(null, "추천 레시피가 없습니다.", "알림", JOptionPane.INFORMATION_MESSAGE);
+            }
+
+            // 패널을 다시 그리기
+            revalidate();
+            repaint();
+        }
+    }
+    
 }

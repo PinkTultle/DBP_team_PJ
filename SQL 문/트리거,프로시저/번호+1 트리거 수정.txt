@@ -1,0 +1,32 @@
+-- 1-2. 레시피의 번호를 1증가시켜 삽입한다.
+CREATE OR REPLACE TRIGGER Recipe_Num_Plus_Count
+    BEFORE INSERT
+    ON 레시피
+    FOR EACH ROW
+    DECLARE
+    Recipe_Num NUMBER; -- 레시피 번호  
+BEGIN
+    SELECT MAX(레시피번호) INTO Recipe_Num FROM 레시피 ;
+    IF Recipe_Num >= 1 THEN
+        :NEW.레시피번호 := Recipe_Num + 1;   
+    ELSE
+        :NEW.레시피번호 := 1;
+    END IF;
+END;
+
+-- 2. 댓글 테이블이 (삽입, 삭제)될 때마다 그 갱신내용을 댓글 테이블에 반영하는 기능 수행 (예, 열라면 레시피의 댓글은 3개일 때, 사용자가 등록하는 댓글의 댓글번호는 4가 된다.
+-- 2.1 댓글 삽입 시 댓글 번호 1증가해서 삽입하는 트리거
+CREATE OR REPLACE TRIGGER PLUS_coCount
+   BEFORE INSERT
+   ON 댓글
+   FOR EACH ROW 
+   DECLARE
+   Co_Num NUMBER; -- 댓글 번호
+BEGIN
+    SELECT MAX(댓글번호) INTO Co_Num FROM 댓글 WHERE 레시피번호 = :NEW.레시피번호;
+    IF Co_Num >=1 THEN
+        :NEW.댓글번호 := Co_Num + 1;     
+    ELSE
+        :NEW.댓글번호 := 1;
+    END IF;
+END;

@@ -59,7 +59,7 @@ public class DAO {
 			if(!con.isClosed()) con.close();
 			if(rs != null) rs.close();
 			if(stmt != null) stmt.close();
-			if(!pstmt.isClosed()) pstmt.close();
+			if(pstmt != null) pstmt.close();
 			if(callstmt != null) callstmt.close();
 			sql = null;
 			ex_num = 0;
@@ -535,8 +535,8 @@ public class DAO {
 			
 			rs = pstmt.executeQuery();
 			
-			rs.next();
-			
+			if(rs.next()) {
+				
 			dto.setRECIPE_NUMBER(rs.getInt("레시피번호"));
 			dto.setTITLE(rs.getString("제목"));
 			dto.setID(rs.getString("작성자ID"));
@@ -547,6 +547,8 @@ public class DAO {
 			dto.setVIEW_COUNT(rs.getInt("조회수"));
 			dto.setRECOMMEND_COUNT(rs.getInt("추천수"));
 			dto.setLEVEL(rs.getInt("난이도"));
+			
+			}
 			
 			return dto;
 			
@@ -711,6 +713,85 @@ public class DAO {
 		}	
 	}
 	
+	//타. 레시피 테이블 전체를 반환한다.
+	public Vector<Recipe_DTO> Search_by_recipe() {
+		
+		DB_Connect();
+		Vector<Recipe_DTO> list = new Vector<Recipe_DTO>();
+	
+		sql = "SELECT * from 레시피 ORDER by 레시피번호 asc, 추천수 desc";
+		
+		try {
+			pstmt = con.prepareStatement(sql);
+			
+			rs = pstmt.executeQuery();
+			
+			while(rs.next()){
+				Recipe_DTO dto = new Recipe_DTO();
+				
+				dto.setRECIPE_NUMBER(rs.getInt("레시피번호"));
+				dto.setTITLE(rs.getString("제목"));
+				dto.setID(rs.getString("작성자ID"));
+				dto.setCONTENT(rs.getString("작성내용"));
+				dto.setDATE(rs.getDate("작성시간"));
+				dto.setCATEGORY(rs.getString("카테고리"));
+				dto.setDESCRIPTION(rs.getString("레시피설명"));
+				dto.setVIEW_COUNT(rs.getInt("조회수"));
+				dto.setRECOMMEND_COUNT(rs.getInt("추천수"));
+				dto.setLEVEL(rs.getInt("난이도"));
+				
+				list.add(dto);
+			}
+			
+			return list;
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		} finally {
+			End_of_use();
+		}	
+	}
+	
+	//파. 리뷰피 테이블 전체를 반환한다.
+
+	public Vector<Review_DTO> Search_for_reviews() {
+		
+		DB_Connect();
+		Vector<Review_DTO> list = new Vector<Review_DTO>();
+	
+		sql = "SELECT * from 리뷰";
+		
+		try {
+			pstmt = con.prepareStatement(sql);
+			
+			rs = pstmt.executeQuery();
+			
+			
+			while(rs.next()){
+				Review_DTO dto = new Review_DTO();
+				
+				dto.setREVIEW_NUMBER(rs.getInt("리뷰번호"));
+				dto.setRECIPE_NUMVER(rs.getInt("레시피번호"));
+				dto.setCONTENT(rs.getString("리뷰내용"));
+				dto.setDATE(rs.getDate("작성시간"));
+				dto.setGRADE(rs.getInt("평점"));
+				dto.setID(rs.getString("작성자ID"));				
+				
+				list.add(dto);
+				
+			}
+				
+			return list;
+					
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		} finally {
+			End_of_use();
+		}	
+	}
+
 	
 	//DELETE
 	//가. 레시피 삭제 시, 레시피 번호로 레시피 테이블에서 해당 레시피를 삭제한다.
@@ -744,11 +825,12 @@ public class DAO {
 	
 	//1. 사용자가 추천 레시피 버튼을 누르면 사용자의 등급을 입력값으로 받아 적절한 난이도의 레시피를 반환하는 
 	// 추천 레시피 프로시저를 호출한다. 
-	private void Recommend_recipe(String grade) {
+	public Vector<Recipe_DTO> Recommend_recipe(String grade) {
+		
+		Vector<Recipe_DTO> list = new Vector<Recipe_DTO>();
 		
 		DB_Connect();
-		
-		rs = null;
+
 		sql = "{call 추천_레시피(?,?)}";
 		
 		try {
@@ -764,26 +846,45 @@ public class DAO {
 						
 			
 			while(rs.next()) {
-				System.out.printf("레시피번호: [%s] ",rs.getString("레시피번호"));
-				System.out.printf("제목: [%s] ",rs.getString("제목"));
-				System.out.printf("카테고리: [%s]\n ",rs.getString("카테고리"));
+				
+				Recipe_DTO dto = new Recipe_DTO();
+				
+				dto.setRECIPE_NUMBER(rs.getInt("레시피번호"));
+				dto.setTITLE(rs.getString("제목"));
+				dto.setID(rs.getString("작성자ID"));
+				dto.setCONTENT(rs.getString("작성내용"));
+				dto.setDATE(rs.getDate("작성시간"));
+				dto.setCATEGORY(rs.getString("카테고리"));
+				dto.setDESCRIPTION(rs.getString("레시피설명"));
+				dto.setVIEW_COUNT(rs.getInt("조회수"));
+				dto.setRECOMMEND_COUNT(rs.getInt("추천수"));
+				dto.setLEVEL(rs.getInt("난이도"));
+				
+				list.add(dto);
 			}
 			
-			End_of_use();
-		}catch(Exception e) {
+			return list;
 			
+		}catch(Exception e) {
+			return null;
 		}	
+		finally {
+			End_of_use();
+		}
 	}
 	
 	 // 2. 사용자 탈퇴 시 사용자가 선택한 옵션을 입력값으로 받아 사용자가 작성했던 레시피와 리뷰, 댓글의 작성자를 
 	 // 임시계정으로 변경 혹은 삭제하는 탈퇴 프로시저를 호출한다.
-	private void User_Delete(String user_id, int option) {
+	public void User_Delete(String user_id, int option) {
 		
 		DB_Connect();
 		
 		sql = "{call 사용자_탈퇴(?,?)}";
 		
 		try {
+			
+			con.setAutoCommit(false);
+			
 			callstmt = con.prepareCall(sql);
 			
 			callstmt.setString(1,user_id);
@@ -792,16 +893,22 @@ public class DAO {
 			ex_num = callstmt.executeUpdate();
 			
 			if(ex_num != 0) {
-				System.out.println("적용완료");
-				
+				con.commit();
 			}
 			else {
-				System.out.println("해당하는 데이터가 없거나 적용실패");
+				con.rollback();
 			}
-			callstmt.close(); // End_of_use() 사용 시 rs 사용 안하고 close() 하면 오류
-			con.close();
+			
+			
+			con.setAutoCommit(true);
+			
+			
 		}catch(Exception e) {
-		}	
+		}
+		finally {
+			End_of_use();
+
+		}
 	}
 	
 	public String toKR(String str) {

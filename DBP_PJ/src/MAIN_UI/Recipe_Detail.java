@@ -96,7 +96,7 @@ public class Recipe_Detail extends JFrame {
     	
         setTitle("레시피 상세 정보");
         setSize(800, 800);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
         setLocationRelativeTo(null);
         setLayout(new BorderLayout());
         
