@@ -1,0 +1,42 @@
+CREATE OR REPLACE PROCEDURE 추천_레시피 (
+    p_등급 IN VARCHAR2
+)
+IS
+    v_등급숫자 NUMBER;
+BEGIN
+    -- 등급 '뉴비'를 숫자 1로 매칭
+    CASE p_등급
+        WHEN '뉴비' THEN
+            v_등급숫자 := 1;
+        WHEN '브론즈' THEN
+            v_등급숫자 := 2;
+        WHEN '실버' THEN
+            v_등급숫자 := 3;
+        WHEN '골드' THEN
+            v_등급숫자 := 4;
+        WHEN '플레티넘' THEN
+            v_등급숫자 := 5;
+        WHEN '다이아' THEN
+            v_등급숫자 := 6;        
+        ELSE
+            v_등급숫자 := 0; -- 등급이 매칭 안됬을 떄
+    END CASE;
+
+    -- 등급과 같거나 +1 난이도의 레시피 검색
+    FOR 레시피 IN (
+        SELECT *
+        FROM 레시피
+        WHERE 난이도 = v_등급숫자 OR 난이도 = v_등급숫자 + 1
+    )
+    LOOP
+        -- 결과 출력
+        DBMS_OUTPUT.PUT_LINE('레시피번호: ' || 레시피.레시피번호 || ', 제목: ' || 레시피.제목 || ', 카테고리: ' || 레시피.카테고리);
+    END LOOP;
+
+END 추천_레시피;
+/
+
+-- 테스트
+
+SET SERVEROUTPUT ON;
+EXECUTE 추천_레시피('뉴비');

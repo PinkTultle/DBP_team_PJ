@@ -59,7 +59,7 @@ public class DAO {
 			if(!con.isClosed()) con.close();
 			if(rs != null) rs.close();
 			if(stmt != null) stmt.close();
-			if(!pstmt.isClosed()) pstmt.close();
+			if(pstmt != null) pstmt.close();
 			if(callstmt != null) callstmt.close();
 			sql = null;
 			ex_num = 0;
@@ -706,7 +706,7 @@ public class DAO {
 	}
 	
 	//타. 레시피 테이블 전체를 반환한다.
-public Vector<Recipe_DTO> Search_by_recipe() {
+	public Vector<Recipe_DTO> Search_by_recipe() {
 		
 		DB_Connect();
 		Vector<Recipe_DTO> list = new Vector<Recipe_DTO>();
@@ -867,13 +867,16 @@ public Vector<Recipe_DTO> Search_by_recipe() {
 	
 	 // 2. 사용자 탈퇴 시 사용자가 선택한 옵션을 입력값으로 받아 사용자가 작성했던 레시피와 리뷰, 댓글의 작성자를 
 	 // 임시계정으로 변경 혹은 삭제하는 탈퇴 프로시저를 호출한다.
-	private void User_Delete(String user_id, int option) {
+	public void User_Delete(String user_id, int option) {
 		
 		DB_Connect();
 		
 		sql = "{call 사용자_탈퇴(?,?)}";
 		
 		try {
+			
+			con.setAutoCommit(false);
+			
 			callstmt = con.prepareCall(sql);
 			
 			callstmt.setString(1,user_id);
@@ -882,16 +885,22 @@ public Vector<Recipe_DTO> Search_by_recipe() {
 			ex_num = callstmt.executeUpdate();
 			
 			if(ex_num != 0) {
-				System.out.println("적용완료");
-				
+				con.commit();
 			}
 			else {
-				System.out.println("해당하는 데이터가 없거나 적용실패");
+				con.rollback();
 			}
-			callstmt.close(); // End_of_use() 사용 시 rs 사용 안하고 close() 하면 오류
-			con.close();
+			
+			
+			con.setAutoCommit(true);
+			
+			
 		}catch(Exception e) {
-		}	
+		}
+		finally {
+			End_of_use();
+
+		}
 	}
 	
 	public String toKR(String str) {

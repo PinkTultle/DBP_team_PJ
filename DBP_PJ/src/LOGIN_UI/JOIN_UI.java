@@ -42,9 +42,9 @@ public class JOIN_UI extends JDialog {
 	private input_feild id_tf, pw_tf, email_tf, name_tf, call_tf;
 	private Font font = new Font("맑은 고딕", Font.ROMAN_BASELINE + Font.PLAIN, 18);
 	private JButton id_bt, close_bt, join_bt;
+	private JFrame login_UI;
 	private JComboBox<String> email_host;
 	private String [] email_h = {"naver.com", "daum.net", "gmail.com", "hanmail.net", "nate.com", "yahoo.com"};
-	private JFrame login;
 	
 	private ImageIcon join_logo = new ImageIcon("./image/join_LOGO.png"),
 			close_img = new ImageIcon("./image/close.png"),
@@ -58,9 +58,14 @@ public class JOIN_UI extends JDialog {
 	private int width = 60;
 	
 	private boolean overid = false; // 중복확인 했는지 여부
+	
+	/*
+	public static void main(String[] args) {
+		new JOIN_UI();
+	}*/
+	
+	public JOIN_UI() {
 		
-	public JOIN_UI(JFrame login) {
-		this.login = login;
 		//로그인창 객체 저장
 		
 		setTitle("회원가입");
@@ -326,7 +331,7 @@ public class JOIN_UI extends JDialog {
 			
 			if(e.getSource() == close_bt) {
 				dispose();
-				login.setVisible(true);
+				login_UI.setVisible(true);
 
 			}
 			
@@ -334,7 +339,7 @@ public class JOIN_UI extends JDialog {
 		}	
 	}
 	
-	class yesno_popup extends JDialog {
+	public class yesno_popup extends JDialog {
 
 		public yesno_popup(String text) {
 			setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);

@@ -1,0 +1,16 @@
+CREATE OR REPLACE TRIGGER 레시피삭제_트리거
+AFTER DELETE ON 레시피
+FOR EACH ROW
+BEGIN
+    -- 레시피에 연관된 댓글 삭제
+    DELETE FROM 댓글 WHERE 레시피번호 = :OLD.레시피번호;
+    
+    -- 레시피에 연관된 리뷰 삭제
+    DELETE FROM 리뷰 WHERE 레시피번호 = :OLD.레시피번호;
+END;
+/
+
+-- 테스트
+SELECT * FROM 댓글;
+SELECT * FROM 리뷰;
+DELETE FROM 레시피 WHERE 레시피번호 = 3; -- 레시피 3번 삭제
