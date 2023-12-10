@@ -16,7 +16,7 @@ public class Main extends JFrame {
 	private JTextField searchTextField;
 	private TableRowSorter<DefaultTableModel> sorter;
 
-    public Main() {
+    public Main(String id) {
         // 프레임 설정
         setTitle("MAIN");
         setSize(800, 500);
@@ -390,10 +390,10 @@ public class Main extends JFrame {
         repaint();
     }
     
-    public static void main(String[] args) {
+    /*public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
         	Main myGUI = new Main();
             myGUI.setVisible(true);
         });
-    }
+    }*/
 }

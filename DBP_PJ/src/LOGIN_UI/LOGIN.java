@@ -11,6 +11,8 @@ import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.sql.Connection;
+
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -21,6 +23,14 @@ import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
+
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+import java.sql.Statement;
+
+import DBA.*;
+import MAIN_UI.*;
 
 @SuppressWarnings("serial")
 public class LOGIN extends JFrame {
@@ -45,6 +55,11 @@ public class LOGIN extends JFrame {
 	private ActionListener Ae = new Action_event();
 	private JFrame login_UI;
 	
+	String url = "jdbc:oracle:thin:@localhost:1521:XE";
+	String id = "RECIPE";
+	String pw = "1234";
+	private Connection con = null;
+	
 	public static void main(String[] args) {
 		// TODO 로그인 창
 		new LOGIN();
@@ -52,11 +67,30 @@ public class LOGIN extends JFrame {
 
 	}
 	
+	private void DB_Connect() {
+		try {
+			con = DriverManager.getConnection(url, id, pw);	
+			System.out.println("데이터베이스 연결 성공");
+		}
+		catch(SQLException e) {
+			System.out.println("데이터베이스 연결 실패");
+			System.exit(0);
+		}
+	}
 	
 	//GUI 설정
 	public LOGIN() {
 		
 		login_UI = this;
+		
+		try {
+			Class.forName("oracle.jdbc.driver.OracleDriver");
+			System.out.println("드라이브 적재 성공");
+
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+			System.out.println("드라이버를 찾을 수 없습니다.");
+		}
 		
 		//배경 패널 설정
 		c.setLayout(new BorderLayout());
@@ -225,21 +259,33 @@ public class LOGIN extends JFrame {
 		@SuppressWarnings("deprecation")
 		@Override
 		public void actionPerformed(ActionEvent e) {
-
+			
+			String pw = new String(PW.getPassword()); // 입력한 password 가져오기
+			String id = new String(ID.getText());
+			
 			if(e.getSource() == Login_bt) {
 				
-				if(ID.getText().equals("ID")) {
+				if(id.equals("ID")||id.equals("")) {
 					new fail_popup("ID를 입력하세요!");
 				}
-				else if(PW.getText().equals("PW")) {
+				else if(pw.equals("PW")||pw.equals("")) {
 					new fail_popup("PW를 입력하세요!");
 				}
 				else {
-					//로그인 메서드
+					DBA.DAO udao = new DBA.DAO();
+					if(udao.Login_check(id, pw)) {
+						setVisible(false);
+						MAIN_UI.Main main_gui = new MAIN_UI.Main(id);
+						main_gui.setVisible(true);
+					}
+					else if (!udao.Login_check(id, pw)) {
+						new fail_popup("ID or PW 오류");
+					} 
+					
 				}
 			}
 			if(e.getSource() == Join_bt) {
-				new JOIN_UI(login_UI);
+				new JOIN_UI();
 				setVisible(false);
 			}
 		}
