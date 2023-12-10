@@ -1,22 +1,32 @@
 package MAIN_UI;
 
 import javax.swing.*;
+
+import DBA.Comments_DTO;
+
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.Vector;
+
+import DBA.*;
 
 public class Recipe_Detail extends JFrame {
 
     // 레시피 상세 정보 라벨
-    private JLabel rtitleLabel = new JLabel("레시피 제목: 바비큐");
-    private JLabel wnameLabel = new JLabel("작성자: F42Q6I7");
+    private JLabel rtitleLabel = new JLabel("레시피 제목: ");
+    private JLabel wnameLabel = new JLabel("작성자: ");
     private JLabel winfoLabel = new JLabel("작성내용 ");
-    private JLabel wdateLabel = new JLabel("작성시간: 23/08/28");
+    private JLabel wdateLabel = new JLabel("작성시간: ");
     private JLabel wcontentLabel = new JLabel("레시피 설명 ");
-    private JLabel looknumLabel = new JLabel("조회수: 1");
-    private JLabel goodnumLabel = new JLabel("추천수: 0");
-    private JLabel difficulty = new JLabel("난이도: 3");
+    private JLabel looknumLabel = new JLabel("조회수: ");
+    private JLabel goodnumLabel = new JLabel("추천수: ");
+    private JLabel difficulty = new JLabel("난이도: ");
 
     // 작성내용 창
     private JTextField infoText;
@@ -38,12 +48,50 @@ public class Recipe_Detail extends JFrame {
 	
 	private JPanel rdPanel = new JPanel();
 	
+	static private int recipe_num = 1;
+	
+	String url = "jdbc:oracle:thin:@localhost:1521:XE";
+	String id = "RECIPE";
+	String pw = "1234";
+	private Connection con = null;
+	
 	//제목 폰트
 	Font font = new Font("맑은 고딕", Font.PLAIN,20);
 	//내용 폰트
 	Font cofont = new Font("맑은 고딕", Font.PLAIN,15);
 	
-    public Recipe_Detail() {
+	private void DB_Connect() {
+		try {
+			con = DriverManager.getConnection(url, id, pw);	
+			System.out.println("데이터베이스 연결 성공");
+		}
+		catch(SQLException e) {
+			System.out.println("데이터베이스 연결 실패");
+			System.exit(0);
+		}
+	}
+	
+    public Recipe_Detail(int recipe_num1) {
+    	
+    	recipe_num = recipe_num1;
+    	System.out.println(recipe_num);
+    	
+    	DBA.Recipe_DTO rdto = new DBA.Recipe_DTO();
+    	DBA.DAO rdao = new DBA.DAO();
+    	
+    	rdto = rdao.Look_up_recipes(recipe_num1);
+    	
+    	rtitleLabel = new JLabel("레시피 제목: "+ rdto.getTITLE());
+        wnameLabel = new JLabel("작성자: " + rdto.getID());
+        winfoLabel = new JLabel("작성내용 ");
+        wdateLabel = new JLabel("작성시간: " + rdto.getDATE());
+        wcontentLabel = new JLabel("레시피 설명 ");
+        looknumLabel = new JLabel("조회수: " + rdto.getVIEW_COUNT());
+        goodnumLabel = new JLabel("추천수: " + rdto.getRECOMMEND_COUNT());
+        difficulty = new JLabel("난이도: " + rdto.getLEVEL());
+
+        
+    	
         setTitle("레시피 상세 정보");
         setSize(800, 800);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -96,7 +144,7 @@ public class Recipe_Detail extends JFrame {
 		this.add(reviewLabel);
 		
 		// 작성내용 창
-		infoText = new JTextField("레시피 36");
+		infoText = new JTextField(rdto.getDESCRIPTION());
 		infoText.setEnabled(false);
 		infoText.setFont(cofont);
 		infoPane = new JScrollPane(infoText);
@@ -109,7 +157,7 @@ public class Recipe_Detail extends JFrame {
 		
 		// 레시피 설명 창
 		
-		contentText = new JTextField("맛있는 바비큐 레시피 !");
+		contentText = new JTextField(rdto.getCONTENT());
 		contentText.setEnabled(false);
 		contentText.setFont(cofont);
 		contentPane = new JScrollPane(contentText);
@@ -136,7 +184,15 @@ public class Recipe_Detail extends JFrame {
 		model.addElement("abcde");
 		model.addElement("abcde"); */
 		//reviewList = new JList(model);
-		String[] reviewstr = {"abc","abcd","abcde","abcdef","abcdefg"};
+		Vector<Review_DTO> redto = new Vector<Review_DTO>();
+		DBA.DAO redao = new DBA.DAO();
+    	
+    	redto = redao.Search_for_reviews(recipe_num1);
+		
+		String[] reviewstr = new String[10];
+		for(int index = 0; index < redto.size(); index ++) {
+			reviewstr[index] = redto.elementAt(index).getCONTENT();
+		}
 		reviewList = new JList(reviewstr);
 		reviewList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		
@@ -155,7 +211,17 @@ public class Recipe_Detail extends JFrame {
 		this.add(commentLabel);
 		
 		// 댓글 리스트
-		String[] commentstr = {"너무 어려워요 ㅠㅠ","좋은 레시피 감사합니다","오늘은 이거닷","너무 어려워요 ㅠㅠ"};
+		
+		Vector<Comments_DTO> cdto = new Vector<Comments_DTO>();
+		DBA.DAO cdao = new DBA.DAO();
+    	
+    	cdto = cdao.Search_for_comments(recipe_num1);
+		
+		String[] commentstr = new String[10];
+		for(int index = 0; index < cdto.size(); index ++) {
+			commentstr[index] = cdto.elementAt(index).getCONTENT();
+		}
+		
 		commentList = new JList(commentstr);
 		commentList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		
@@ -183,10 +249,8 @@ public class Recipe_Detail extends JFrame {
 		// 프레임을 표시
         setVisible(true);
     }
-
-   
-   
+    
     public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> new Recipe_Detail());
+        SwingUtilities.invokeLater(() -> new Recipe_Detail(recipe_num));
     }
 }

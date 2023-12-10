@@ -11,12 +11,49 @@ import java.awt.event.ActionListener;
 import javax.swing.RowFilter;
 import javax.swing.table.TableRowSorter;
 
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+import java.sql.Statement;
+
+import DBA.*;
+import MAIN_UI.*;
+
 public class Main extends JFrame {
 	private JPanel currentCenterPanel;
 	private JTextField searchTextField;
 	private TableRowSorter<DefaultTableModel> sorter;
+	
+	String url = "jdbc:oracle:thin:@localhost:1521:XE";
+	String id = "RECIPE";
+	String pw = "1234";
+	private Connection con = null;
+	
+	private int recipe_num = 1;
+	
+	
+	private void DB_Connect() {
+		try {
+			con = DriverManager.getConnection(url, id, pw);	
+			System.out.println("데이터베이스 연결 성공");
+		}
+		catch(SQLException e) {
+			System.out.println("데이터베이스 연결 실패");
+			System.exit(0);
+		}
+	}
 
     public Main(String id) {
+    	
+    	try {
+			Class.forName("oracle.jdbc.driver.OracleDriver");
+			System.out.println("드라이브 적재 성공");
+
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+			System.out.println("드라이버를 찾을 수 없습니다.");
+		}
+    	
         // 프레임 설정
         setTitle("MAIN");
         setSize(800, 500);
@@ -102,14 +139,21 @@ public class Main extends JFrame {
                 if (e.getClickCount() == 2) { // 더블클릭 이벤트
                     int selectedRow = table.getSelectedRow();
                     if (selectedRow != -1) {
+                    	int col = table.getSelectedColumn();
+                    	recipe_num = (int)table.getValueAt(selectedRow, col);
+                    	System.out.println(recipe_num);
                         // Recipe_Detail.java에 정보 전달
-                        SwingUtilities.invokeLater(() -> {
-                            Recipe_Detail recipeDetail = new Recipe_Detail();
+                       // SwingUtilities.invokeLater(() -> {
+                        	 MAIN_UI.Recipe_Detail recipeDetail = new MAIN_UI.Recipe_Detail(recipe_num);
+                        	// Recipe_Detail recipeDetail = new Recipe_Detail(36);
                             recipeDetail.setVisible(true);
-                        });
+                      //  });
                     }
+          
                 }
+                
             }
+            
         });
         for (int i = 0; i < 40; i++) {
             Object[] rowData = {i + 1, "?식", "제목 " + (i + 1), "레시피 내용 " + (i + 1), (int) (Math.random() * 100)};
@@ -237,11 +281,14 @@ public class Main extends JFrame {
                 if (e.getClickCount() == 2) { // 더블클릭 이벤트
                     int selectedRow = reviewTable.getSelectedRow();
                     if (selectedRow != -1) {
+                    	int col = reviewTable.getSelectedColumn();
+                    	recipe_num = (int)reviewTable.getValueAt(selectedRow, col);
+                    	System.out.println(recipe_num);
                         // Recipe_Detail.java에 정보 전달
-                        SwingUtilities.invokeLater(() -> {
-                            Recipe_Detail recipeDetail = new Recipe_Detail();
+                        //SwingUtilities.invokeLater(() -> {
+                        	MAIN_UI.Recipe_Detail recipeDetail = new MAIN_UI.Recipe_Detail(recipe_num);
                             recipeDetail.setVisible(true);
-                        });
+                        //});
                     }
                 }
             }
@@ -332,11 +379,14 @@ public class Main extends JFrame {
                 if (e.getClickCount() == 2) { // 더블클릭 이벤트
                     int selectedRow = BestRecipeTable.getSelectedRow();
                     if (selectedRow != -1) {
+                    	int col = BestRecipeTable.getSelectedColumn();
+                    	recipe_num = (int)BestRecipeTable.getValueAt(selectedRow, col);
+                    	System.out.println(recipe_num);
                         // Recipe_Detail.java에 정보 전달
-                        SwingUtilities.invokeLater(() -> {
-                            Recipe_Detail recipeDetail = new Recipe_Detail();
-                            recipeDetail.setVisible(true);
-                        });
+                        //SwingUtilities.invokeLater(() -> {
+                        MAIN_UI.Recipe_Detail recipeDetail = new MAIN_UI.Recipe_Detail(recipe_num);
+                        recipeDetail.setVisible(true);
+                        //});
                     }
                 }
             }
