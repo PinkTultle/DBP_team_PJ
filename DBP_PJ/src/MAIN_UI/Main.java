@@ -1,6 +1,7 @@
 package MAIN_UI;
 
 import javax.swing.*;
+
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -11,12 +12,45 @@ import java.awt.event.ActionListener;
 import javax.swing.RowFilter;
 import javax.swing.table.TableRowSorter;
 
+import LOGIN_UI.LOGIN.*;
+
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+import java.sql.Statement;
+
 public class Main extends JFrame {
 	private JPanel currentCenterPanel;
 	private JTextField searchTextField;
 	private TableRowSorter<DefaultTableModel> sorter;
 
+	String url = "jdbc:oracle:thin:@localhost:1521:XE";
+	String id = "RECIPE";
+	String pw = "1234";
+	private Connection con = null;
+	
+	private void DB_Connect() {
+		try {
+			con = DriverManager.getConnection(url, id, pw);	
+			System.out.println("데이터베이스 연결 성공");
+		}
+		catch(SQLException e) {
+			System.out.println("데이터베이스 연결 실패");
+			System.exit(0);
+		}
+	}
+	
     public Main(String id) {
+    	
+		try {
+			Class.forName("oracle.jdbc.driver.OracleDriver");
+			System.out.println("드라이브 적재 성공");
+
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+			System.out.println("드라이버를 찾을 수 없습니다.");
+		}
+		
         // 프레임 설정
         setTitle("MAIN");
         setSize(800, 500);
@@ -324,6 +358,9 @@ public class Main extends JFrame {
         BestRecipeTableModel.addColumn("레시피 제목");
         BestRecipeTableModel.addColumn("추천수");
 
+        DBA.DAO udao = new DBA.DAO();
+        udao.Recommend_recipe("뉴비");
+        
         // 테이블 생성
         JTable BestRecipeTable = new JTable(BestRecipeTableModel);
         BestRecipeTable.addMouseListener(new MouseAdapter() {

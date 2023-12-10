@@ -6,6 +6,6 @@
 			<attribute name="module" value="true"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="C:/Users/user/OneDrive/base folder/대학/4학년 2학기/데이터베이스 프로그래밍/팀 프로젝트/Program/DBP_PJ/ojdbc8.jar"/>
+	<classpathentry kind="lib" path="C:/Users/남강민/Desktop/23-2_DBpro실습/sql파일/8장.+JAVA/ojdbc8.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

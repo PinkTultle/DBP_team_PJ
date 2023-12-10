@@ -737,7 +737,7 @@ public class DAO {
 	
 	//1. 사용자가 추천 레시피 버튼을 누르면 사용자의 등급을 입력값으로 받아 적절한 난이도의 레시피를 반환하는 
 	// 추천 레시피 프로시저를 호출한다. 
-	private void Recommend_recipe(String grade) {
+	public void Recommend_recipe(String grade) {
 		
 		DB_Connect();
 		
