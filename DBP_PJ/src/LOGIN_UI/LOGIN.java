@@ -179,6 +179,7 @@ public class LOGIN extends JFrame {
 			
 		}
 	}
+	
 
 	class Focus_event implements FocusListener, KeyListener {
 

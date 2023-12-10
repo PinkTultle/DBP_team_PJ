@@ -19,7 +19,7 @@ CREATE TABLE 사용자 (
 	전화번호	VARCHAR2(15),
 	비밀번호  VARCHAR2(30),
 	총작성수 NUMBER(5),
-	등급 VARCHAR2(20) default '아이언',
+	등급 VARCHAR2(20) default '뉴비',
 	FOREIGN KEY (등급) REFERENCES 등급(등급이름)
 );
 

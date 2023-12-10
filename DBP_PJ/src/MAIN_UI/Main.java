@@ -12,7 +12,7 @@ import javax.swing.table.TableColumnModel;
 import javax.swing.border.EmptyBorder;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import javax.swing.RowFilter;
+
 import javax.swing.table.TableRowSorter;
 
 import DBA.DAO;
@@ -20,6 +20,7 @@ import DBA.Recipe_DTO;
 import DBA.User_DTO;
 
 public class Main extends JFrame {
+	private Main mainframe;
 	private JPanel currentCenterPanel;
 	private JTextField searchTextField;
 	private TableRowSorter<DefaultTableModel> sorter;
@@ -38,6 +39,8 @@ public class Main extends JFrame {
         setLocationRelativeTo(null);
         User_id = id;
 
+        mainframe = this;
+        
         // 상단 패널 생성
         JPanel topPanel = new JPanel();
         topPanel.setPreferredSize(new Dimension(800, 100));
@@ -55,7 +58,7 @@ public class Main extends JFrame {
             @Override
             public void mouseClicked(MouseEvent e) {
             	 SwingUtilities.invokeLater(() -> {
-                     User_Profile userProfile = new User_Profile();
+                     User_Profile userProfile = new User_Profile(mainframe);
                      userProfile.setVisible(true);
                  });
              }
