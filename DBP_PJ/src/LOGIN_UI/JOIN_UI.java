@@ -64,9 +64,11 @@ public class JOIN_UI extends JDialog {
 		new JOIN_UI();
 	}*/
 	
-	public JOIN_UI() {
+	public JOIN_UI(JFrame login) {
 		
 		//로그인창 객체 저장
+		
+		login_UI = login;
 		
 		setTitle("회원가입");
 		c.setLayout(new BorderLayout());

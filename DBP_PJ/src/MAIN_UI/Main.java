@@ -12,7 +12,7 @@ import javax.swing.table.TableColumnModel;
 import javax.swing.border.EmptyBorder;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import javax.swing.RowFilter;
+
 import javax.swing.table.TableRowSorter;
 
 import DBA.DAO;
@@ -28,9 +28,12 @@ public class Main extends JFrame {
 	private JScrollPane scrollPane;
 	private String User_id;
 	private JPanel centerPanel;
+	private JFrame Main;
 	
 
     public Main(String id) {
+    	
+    	Main = this;
         // 프레임 설정
         setTitle("MAIN");
         setSize(800, 500);
@@ -54,7 +57,7 @@ public class Main extends JFrame {
             @Override
             public void mouseClicked(MouseEvent e) {
             	 SwingUtilities.invokeLater(() -> {
-                     User_Profile userProfile = new User_Profile();
+                     User_Profile userProfile = new User_Profile(Main, User_id);
                      userProfile.setVisible(true);
                  });
              }
