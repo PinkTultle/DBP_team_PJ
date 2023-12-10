@@ -55,10 +55,6 @@ public class LOGIN extends JFrame {
 	private ActionListener Ae = new Action_event();
 	private JFrame login_UI;
 	
-	String url = "jdbc:oracle:thin:@localhost:1521:XE";
-	String id = "RECIPE";
-	String pw = "1234";
-	private Connection con = null;
 	
 	public static void main(String[] args) {
 		// TODO 로그인 창
@@ -67,30 +63,9 @@ public class LOGIN extends JFrame {
 
 	}
 	
-	private void DB_Connect() {
-		try {
-			con = DriverManager.getConnection(url, id, pw);	
-			System.out.println("데이터베이스 연결 성공");
-		}
-		catch(SQLException e) {
-			System.out.println("데이터베이스 연결 실패");
-			System.exit(0);
-		}
-	}
-	
 	//GUI 설정
 	public LOGIN() {
 		
-		login_UI = this;
-		
-		try {
-			Class.forName("oracle.jdbc.driver.OracleDriver");
-			System.out.println("드라이브 적재 성공");
-
-		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
-			System.out.println("드라이버를 찾을 수 없습니다.");
-		}
 		
 		//배경 패널 설정
 		c.setLayout(new BorderLayout());
@@ -209,11 +184,11 @@ public class LOGIN extends JFrame {
 
 		@Override
 		public void focusGained(FocusEvent e) {
-			if(e.getSource() == ID) {
+			if(e.getSource() == ID && ID.getText().equals("ID")) {
 				ID.setText("");
 			}
 			
-			if(e.getSource() == PW) {
+			if(e.getSource() == PW && PW.getEchoChar()==(char)0 ) {
 				PW.setText("");
 				PW.setEchoChar('*');	
 			}			
@@ -262,7 +237,7 @@ public class LOGIN extends JFrame {
 			
 			String pw = new String(PW.getPassword()); // 입력한 password 가져오기
 			String id = new String(ID.getText());
-			
+
 			if(e.getSource() == Login_bt) {
 				
 				if(id.equals("ID")||id.equals("")) {

@@ -299,8 +299,8 @@ public class DAO {
 			pstmt.setString(2, pw);
 			//검색 결과가 있다 -> 해당 계정 및 비밀번호 존재
 			//true 반환 : 로그인 성공
-			ResultSet result = pstmt.executeQuery();
-			if(result.isBeforeFirst()) {
+			rs = pstmt.executeQuery();
+			if(rs.next()) {
 				return true;
 			}else throw(null);
 			
@@ -326,10 +326,10 @@ public class DAO {
 			pstmt = con.prepareStatement(sql);
 			pstmt.setString(1, id);
 			
-			ResultSet result = pstmt.executeQuery();
-			System.out.println(!result.isBeforeFirst());
+			rs = pstmt.executeQuery();
+
 			//중복 아이디가 없을 경우 true반환
-			if(!result.isBeforeFirst()) {
+			if(!rs.isBeforeFirst()) {
 				return true;
 			}else throw(null);
 			
@@ -684,17 +684,16 @@ public class DAO {
 			
 			rs = pstmt.executeQuery();
 			
-			rs.next();
-
-			dto.setREVIEW_NUMBER(rs.getInt("리뷰번호"));
-			dto.setRECIPE_NUMVER(rs.getInt("레시피번호"));
-			dto.setCONTENT(rs.getString("리뷰내용"));
-			dto.setDATE(rs.getDate("작성시간"));
-			dto.setGRADE(rs.getInt("평점"));
-			dto.setID(rs.getString("작성자ID"));	
-			
+			if(rs.next()) {
+				dto.setREVIEW_NUMBER(rs.getInt("리뷰번호"));
+				dto.setRECIPE_NUMVER(rs.getInt("레시피번호"));
+				dto.setCONTENT(rs.getString("리뷰내용"));
+				dto.setDATE(rs.getDate("작성시간"));
+				dto.setGRADE(rs.getInt("평점"));
+				dto.setID(rs.getString("작성자ID"));	
+				
+			}			
 			return dto;
-			
 			
 		} catch (Exception e) {
 			e.printStackTrace();
