@@ -147,7 +147,8 @@ public class Recipe_Detail extends JFrame {
 		
 		// 작성내용 창
 		infoText = new JTextField(rdto.getDESCRIPTION());
-		infoText.setEnabled(false);
+		infoText.setEditable(false);
+
 		infoText.setFont(cofont);
 		infoPane = new JScrollPane(infoText);
 		infoPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
@@ -160,7 +161,8 @@ public class Recipe_Detail extends JFrame {
 		// 레시피 설명 창
 		
 		contentText = new JTextField(rdto.getCONTENT());
-		contentText.setEnabled(false);
+		contentText.setEditable(false);
+
 		contentText.setFont(cofont);
 		contentPane = new JScrollPane(contentText);
         contentPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
