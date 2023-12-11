@@ -294,7 +294,6 @@ public class JOIN_UI extends JDialog {
 					}
 				}
 			}
-			
 			if(e.getSource() == join_bt){
 				if(id2.equals("입력하세요")||id2.equals("")) {
 					new yesno_popup("ID를 입력하세요!");

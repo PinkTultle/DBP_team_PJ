@@ -496,7 +496,7 @@ public class Main extends JFrame {
         public void actionPerformed(ActionEvent e) {
             // DAO 객체 생성
             DAO dao = new DAO();
-
+            
             // 사용자 정보 조회
             User_DTO user = dao.Query_user_profile(User_id);
 
@@ -532,7 +532,6 @@ public class Main extends JFrame {
                 // 수정된 부분: 추천 레시피가 없을 때의 처리
                 JOptionPane.showMessageDialog(null, "추천 레시피가 없습니다.", "알림", JOptionPane.INFORMATION_MESSAGE);
             }
-
             // 패널을 다시 그리기
             revalidate();
             repaint();

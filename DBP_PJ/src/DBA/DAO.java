@@ -94,7 +94,6 @@ public class DAO {
 		
 		DB_Connect();
 		sql = "delete from 댓글 where 레시피번호 = "+ recipe_num + " and 댓글번호 = "+ comment_num;
-		
 		try {
 			stmt = con.createStatement();
 			ex_num = stmt.executeUpdate(sql);
@@ -109,7 +108,6 @@ public class DAO {
 				con.close();
 				throw(null); 
 			}
-			
 		}
 		//실패시 에러 발생 false 반환
 		catch(Exception e) {
@@ -152,9 +150,7 @@ public class DAO {
 					
 					list.add(dto);
 				}
-				
 				return list;
-				
 			} catch (Exception e) {
 				e.printStackTrace();
 				return null;
@@ -647,7 +643,7 @@ public class DAO {
 		DB_Connect();
 		Vector<Comments_DTO> list = new Vector<Comments_DTO>();
 	
-		sql = "SELECT * from 댓글 where 레시피번호 = ?";
+		sql = "SELECT * from 댓글 where 레시피번호 = ? Order by 댓글번호";
 		
 		try {
 			pstmt = con.prepareStatement(sql);
@@ -664,7 +660,6 @@ public class DAO {
 				dto.setDATE(rs.getDate("작성시간"));
 				dto.setCONTENT(rs.getString("댓글내용"));
 				dto.setID(rs.getString("작성자ID"));
-				
 				
 				list.add(dto);
 				
@@ -836,18 +831,14 @@ public class DAO {
 
 		sql = "{call 추천_레시피(?,?)}";
 		
-		try {
-			
+		try {	
 			callstmt = con.prepareCall(sql);
-			
 			callstmt.registerOutParameter(1,OracleTypes.CURSOR);
-			
 			callstmt.setString(2,grade);
 			callstmt.executeUpdate();
 			
 			rs = (ResultSet)callstmt.getObject(1);
 						
-			
 			while(rs.next()) {
 				
 				Recipe_DTO dto = new Recipe_DTO();
@@ -867,7 +858,6 @@ public class DAO {
 			}
 			
 			return list;
-			
 		}catch(Exception e) {
 			return null;
 		}	
@@ -885,7 +875,6 @@ public class DAO {
 		sql = "{call 사용자_탈퇴(?,?)}";
 		
 		try {
-			
 			con.setAutoCommit(false);
 			
 			callstmt = con.prepareCall(sql);
@@ -902,15 +891,12 @@ public class DAO {
 				con.rollback();
 			}
 			
-			
 			con.setAutoCommit(true);
-			
 			
 		}catch(Exception e) {
 		}
 		finally {
 			End_of_use();
-
 		}
 	}
 	
