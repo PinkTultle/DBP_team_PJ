@@ -101,21 +101,70 @@ public class DAO {
 			
 			//성공시 true 반환
 			if(ex_num == 1) {
+				stmt.close();
+				con.close();
 				return true;
-			}else throw(null); 
+			}else {
+				stmt.close();
+				con.close();
+				throw(null); 
+			}
 			
 		}
 		//실패시 에러 발생 false 반환
 		catch(Exception e) {
+			
 			return false;
 		}
 		finally {
 			//마지막에 연결 끊기 및 객체 초기화
-			End_of_use();
+			//End_of_use(); // pstmt 없는데 close 해서 오류
+			
 		}		
 	}
+	
+	//2. 레시피 테이블 전체를 반환한다.
+		public Vector<Recipe_DTO> Search_by_recipe() {
+			
+			DB_Connect();
+			Vector<Recipe_DTO> list = new Vector<Recipe_DTO>();
+		
+			sql = "SELECT * from 레시피 ORDER by 레시피번호 asc, 추천수 desc";
+			
+			try {
+				stmt = con.createStatement();
+				
+				rs = stmt.executeQuery(sql);
+				
+				while(rs.next()){
+					Recipe_DTO dto = new Recipe_DTO();
+					
+					dto.setRECIPE_NUMBER(rs.getInt("레시피번호"));
+					dto.setTITLE(rs.getString("제목"));
+					dto.setID(rs.getString("작성자ID"));
+					dto.setCONTENT(rs.getString("작성내용"));
+					dto.setDATE(rs.getDate("작성시간"));
+					dto.setCATEGORY(rs.getString("카테고리"));
+					dto.setDESCRIPTION(rs.getString("레시피설명"));
+					dto.setVIEW_COUNT(rs.getInt("조회수"));
+					dto.setRECOMMEND_COUNT(rs.getInt("추천수"));
+					dto.setLEVEL(rs.getInt("난이도"));
+					
+					list.add(dto);
+				}
+				
+				return list;
+				
+			} catch (Exception e) {
+				e.printStackTrace();
+				return null;
+			} finally {
+				End_of_use();
+			}	
+		}
+	
 
-	//   2. 리뷰 삭제 시, 리뷰 번호로 리뷰 테이블의 해당 리뷰를 삭제한다.
+	//   3. 리뷰 삭제 시, 리뷰 번호로 리뷰 테이블의 해당 리뷰를 삭제한다.
 	public boolean Delete_review(int recipe_num, int review_num) {
 		
 		DB_Connect();
@@ -705,45 +754,7 @@ public class DAO {
 		}	
 	}
 	
-	//타. 레시피 테이블 전체를 반환한다.
-	public Vector<Recipe_DTO> Search_by_recipe() {
-		
-		DB_Connect();
-		Vector<Recipe_DTO> list = new Vector<Recipe_DTO>();
 	
-		sql = "SELECT * from 레시피 ORDER by 레시피번호 asc, 추천수 desc";
-		
-		try {
-			pstmt = con.prepareStatement(sql);
-			
-			rs = pstmt.executeQuery();
-			
-			while(rs.next()){
-				Recipe_DTO dto = new Recipe_DTO();
-				
-				dto.setRECIPE_NUMBER(rs.getInt("레시피번호"));
-				dto.setTITLE(rs.getString("제목"));
-				dto.setID(rs.getString("작성자ID"));
-				dto.setCONTENT(rs.getString("작성내용"));
-				dto.setDATE(rs.getDate("작성시간"));
-				dto.setCATEGORY(rs.getString("카테고리"));
-				dto.setDESCRIPTION(rs.getString("레시피설명"));
-				dto.setVIEW_COUNT(rs.getInt("조회수"));
-				dto.setRECOMMEND_COUNT(rs.getInt("추천수"));
-				dto.setLEVEL(rs.getInt("난이도"));
-				
-				list.add(dto);
-			}
-			
-			return list;
-			
-		} catch (Exception e) {
-			e.printStackTrace();
-			return null;
-		} finally {
-			End_of_use();
-		}	
-	}
 	
 	//파. 리뷰피 테이블 전체를 반환한다.
 

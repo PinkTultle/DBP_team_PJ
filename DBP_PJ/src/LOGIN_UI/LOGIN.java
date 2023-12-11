@@ -63,6 +63,7 @@ public class LOGIN extends JFrame {
 
 	}
 	
+	
 	//GUI 설정
 	public LOGIN() {
 		

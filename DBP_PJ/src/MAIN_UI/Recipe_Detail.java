@@ -1,22 +1,33 @@
 package MAIN_UI;
 
 import javax.swing.*;
+
+import DBA.Comments_DTO;
+
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.Vector;
+
+import DBA.*;
+import MAIN_UI.*;
 
 public class Recipe_Detail extends JFrame {
 
     // 레시피 상세 정보 라벨
-    private JLabel rtitleLabel = new JLabel("레시피 제목: 바비큐");
-    private JLabel wnameLabel = new JLabel("작성자: F42Q6I7");
+    private JLabel rtitleLabel = new JLabel("레시피 제목: ");
+    private JLabel wnameLabel = new JLabel("작성자: ");
     private JLabel winfoLabel = new JLabel("작성내용 ");
-    private JLabel wdateLabel = new JLabel("작성시간: 23/08/28");
+    private JLabel wdateLabel = new JLabel("작성시간: ");
     private JLabel wcontentLabel = new JLabel("레시피 설명 ");
-    private JLabel looknumLabel = new JLabel("조회수: 1");
-    private JLabel goodnumLabel = new JLabel("추천수: 0");
-    private JLabel difficulty = new JLabel("난이도: 3");
+    private JLabel looknumLabel = new JLabel("조회수: ");
+    private JLabel goodnumLabel = new JLabel("추천수: ");
+    private JLabel difficulty = new JLabel("난이도: ");
 
     // 작성내용 창
     private JTextField infoText;
@@ -36,14 +47,53 @@ public class Recipe_Detail extends JFrame {
 	// 나가기 버튼
 	private JButton exitButton = new JButton("나가기");
 	
+	private JButton ComrmButton = new JButton("댓글 삭제");
+	
 	private JPanel rdPanel = new JPanel();
+	
+	static private int recipe_num = 1;
+	
+	String url = "jdbc:oracle:thin:@localhost:1521:XE";
+	String id = "RECIPE";
+	String pw = "1234";
+	private Connection con = null;
 	
 	//제목 폰트
 	Font font = new Font("맑은 고딕", Font.PLAIN,20);
 	//내용 폰트
 	Font cofont = new Font("맑은 고딕", Font.PLAIN,15);
 	
-    public Recipe_Detail() {
+	private void DB_Connect() {
+		try {
+			con = DriverManager.getConnection(url, id, pw);	
+			System.out.println("데이터베이스 연결 성공");
+		}
+		catch(SQLException e) {
+			System.out.println("데이터베이스 연결 실패");
+			System.exit(0);
+		}
+	}
+	
+    public Recipe_Detail(int recipe_num1) {
+    	
+    	recipe_num = recipe_num1;
+    	
+    	DBA.Recipe_DTO rdto = new DBA.Recipe_DTO();
+    	DBA.DAO rdao = new DBA.DAO();
+    	
+    	rdto = rdao.Look_up_recipes(recipe_num1);
+    	
+    	rtitleLabel = new JLabel("레시피 제목: "+ rdto.getTITLE());
+        wnameLabel = new JLabel("작성자: " + rdto.getID());
+        winfoLabel = new JLabel("작성내용 ");
+        wdateLabel = new JLabel("작성시간: " + rdto.getDATE());
+        wcontentLabel = new JLabel("레시피 설명 ");
+        looknumLabel = new JLabel("조회수: " + rdto.getVIEW_COUNT());
+        goodnumLabel = new JLabel("추천수: " + rdto.getRECOMMEND_COUNT());
+        difficulty = new JLabel("난이도: " + rdto.getLEVEL());
+
+        
+    	
         setTitle("레시피 상세 정보");
         setSize(800, 800);
         setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
@@ -96,8 +146,8 @@ public class Recipe_Detail extends JFrame {
 		this.add(reviewLabel);
 		
 		// 작성내용 창
-		infoText = new JTextField("레시피 36");
-		infoText.setEnabled(false);
+		infoText = new JTextField(rdto.getDESCRIPTION());
+		infoText.setEditable(false);
 		infoText.setFont(cofont);
 		infoPane = new JScrollPane(infoText);
 		infoPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
@@ -109,8 +159,8 @@ public class Recipe_Detail extends JFrame {
 		
 		// 레시피 설명 창
 		
-		contentText = new JTextField("맛있는 바비큐 레시피 !");
-		contentText.setEnabled(false);
+		contentText = new JTextField(rdto.getCONTENT());
+		contentText.setEditable(false);
 		contentText.setFont(cofont);
 		contentPane = new JScrollPane(contentText);
         contentPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
@@ -136,7 +186,15 @@ public class Recipe_Detail extends JFrame {
 		model.addElement("abcde");
 		model.addElement("abcde"); */
 		//reviewList = new JList(model);
-		String[] reviewstr = {"abc","abcd","abcde","abcdef","abcdefg"};
+		Vector<Review_DTO> redto = new Vector<Review_DTO>();
+		DBA.DAO redao = new DBA.DAO();
+    	
+    	redto = redao.Search_for_reviews(recipe_num1);
+		
+		String[] reviewstr = new String[10];
+		for(int index = 0; index < redto.size(); index ++) {
+			reviewstr[index] = redto.elementAt(index).getCONTENT();
+		}
 		reviewList = new JList(reviewstr);
 		reviewList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		
@@ -155,7 +213,17 @@ public class Recipe_Detail extends JFrame {
 		this.add(commentLabel);
 		
 		// 댓글 리스트
-		String[] commentstr = {"너무 어려워요 ㅠㅠ","좋은 레시피 감사합니다","오늘은 이거닷","너무 어려워요 ㅠㅠ"};
+		
+		Vector<Comments_DTO> cdto = new Vector<Comments_DTO>();
+		DBA.DAO cdao = new DBA.DAO();
+    	
+    	cdto = cdao.Search_for_comments(recipe_num1);
+		
+		String[] commentstr = new String[10];
+		for(int index = 0; index < cdto.size(); index ++) {
+			commentstr[index] = (index+1)+ " " +cdto.elementAt(index).getCONTENT();
+		}
+		
 		commentList = new JList(commentstr);
 		commentList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		
@@ -178,15 +246,85 @@ public class Recipe_Detail extends JFrame {
 		exitButton.setLocation(600, 600);
 		rdPanel.add(exitButton);
 		this.add(rdPanel);
+		
+		// 댓글 삭제 버튼 이벤트
+		ComrmButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				
+				Vector<Comments_DTO> cdto = new Vector<Comments_DTO>();
+				DBA.DAO cdao = new DBA.DAO();
+		    	cdto = cdao.Search_for_comments(recipe_num1);
+				String cid = cdto.elementAt(commentList.getSelectedIndex()).getID();
+				int cnum = cdto.elementAt(commentList.getSelectedIndex()).getCOMMENT_NUMBER();
+				System.out.println(MAIN_UI.Main.cid);
+				System.out.println(cnum);
+				 
+				if(cid.contains(MAIN_UI.Main.cid)){ // 불러오는 값이 공백값이 섞여있어서 == 가 아닌 contains로 해당 문자열이 존재하는지로 비교
+					DBA.DAO crmdao = new DBA.DAO();
+					crmdao.Delete_comment(recipe_num1, cnum);
+					dispose();
+					MAIN_UI.Recipe_Detail recipeDetail = new MAIN_UI.Recipe_Detail(recipe_num);
+					recipeDetail.setVisible(true);
+				}else {
+					new fail_popup("작성하신 댓글이 아닙니다");
+				}
+			}
+		});
+		
+		// 나가기 버튼
+		ComrmButton.setSize(100, 40);
+		ComrmButton.setLocation(450, 680);
+		rdPanel.add(ComrmButton);
+		this.add(rdPanel);
         
 		
 		// 프레임을 표시
         setVisible(true);
     }
+    
+    class fail_popup extends JDialog {
 
-   
+    	public fail_popup(String text) {
+
+    		setSize(500, 150);
+    		setTitle("실패");
+
+    		// 사이즈 조절 off
+    		setResizable(false);
+    		// 화면 중앙에 출력
+    		setLocationRelativeTo(null);
+
+    		JPanel jp = (JPanel) getContentPane();
+    		jp.setLayout(new BorderLayout(10, 10));
+    		jp.setBackground(new Color(0xF7EFE5));
+    		setContentPane(jp);
+
+    		JLabel jl = new JLabel(text);
+    		jl.setFont(new Font("맑은 고딕", Font.BOLD | Font.PLAIN, 25));
+
+    		jl.setHorizontalAlignment(JLabel.CENTER);
+
+    		JButton jb = new JButton("확인");
+    		jb.setBorderPainted(false);
+    		jb.setFocusPainted(false);
+    		jb.setBackground(new Color(0x7743DB));
+    		jb.setFont(new Font("맑은 고딕", Font.BOLD | Font.PLAIN, 22));
+    		jb.setForeground(Color.white);
+
+    		jb.addActionListener(new ActionListener() {
+    			public void actionPerformed(ActionEvent e) {
+    				dispose();
+    			}
+    		});
+
+    		add(jb, BorderLayout.SOUTH);
+    		add(jl, BorderLayout.CENTER);
+
+    		setVisible(true);
+    	}
+    }
    
     public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> new Recipe_Detail());
+        SwingUtilities.invokeLater(() -> new Recipe_Detail(recipe_num));
     }
 }
